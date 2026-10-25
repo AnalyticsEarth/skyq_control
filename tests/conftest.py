@@ -26,6 +26,7 @@ from custom_components.skyq_control.aioskyq import (
     DeviceInfo,
     EpgEvent,
     Favourite,
+    Genre,
     MediaInfo,
     PinStatus,
     PositionInfo,
@@ -60,18 +61,41 @@ def device_info(kind: str, host: str, serial: str) -> DeviceInfo:
     return replace(info, serial_number=serial, mac_address=system["MACAddress"])
 
 
-def programme(offset_minutes: int = 0, title: str = "Kingdom") -> EpgEvent:
+def programme(offset_minutes: int = 0, title: str = "Kingdom", sid: int = 3008) -> EpgEvent:
+    """A 30-minute programme; offset 0 started ten minutes ago."""
     start = datetime.now(UTC).replace(second=0, microsecond=0) + timedelta(minutes=offset_minutes - 10)
     return EpgEvent.from_api(
-        3008,
+        sid,
         {
-            "eid": f"Ebc0-{offset_minutes + 100:x}",
+            "eid": f"E{sid:x}-{offset_minutes + 100:x}",
             "t": title,
             "st": int(start.timestamp()),
             "d": 1800,
             "programmeuuid": "8649a421-a57d-4151-b9df-b4ad0662b3f3",
         },
     )
+
+
+def day_of_programmes(sid: int) -> list[EpgEvent]:
+    """Kingdom (on now), News, then Show 2, Show 3, ... every half hour for a day."""
+    titles = {0: "Kingdom", 30: "News"}
+    return [programme(offset, titles.get(offset, f"Show {offset // 30}"), sid) for offset in range(0, 24 * 60, 30)]
+
+
+def make_guide() -> MagicMock:
+    """Stands in for the shared EpgClient (one per territory, shared by every box)."""
+
+    def schedule(channels: Any, start: datetime, end: datetime) -> dict[int, list[EpgEvent]]:
+        sids = [c if isinstance(c, int) else c.sid for c in channels]
+        return {sid: [e for e in day_of_programmes(sid) if e.end > start and e.start < end] for sid in sids}
+
+    guide = MagicMock(name="EpgClient")
+    guide.now_and_next = AsyncMock(side_effect=lambda *_: (programme(0), programme(30, "News")))
+    guide.get_schedule = AsyncMock(side_effect=schedule)
+    guide.get_events = AsyncMock(
+        side_effect=lambda channel, start, end: schedule([channel], start, end)[getattr(channel, "sid", channel)]
+    )
+    return guide
 
 
 @dataclass
@@ -81,6 +105,7 @@ class FakeBox:
     kind: str
     host: str
     serial: str
+    guide: MagicMock = field(default_factory=make_guide)
     power: PowerState = PowerState.ON
     uri: str | None = "xsi://BC0"
     mock: MagicMock = field(init=False)
@@ -99,6 +124,9 @@ class FakeBox:
                 Favourite.from_api(f) for f in load(f"{self.kind}/rest/services_favourites.json")["favourites"]
             ]
         )
+        box.get_genres = AsyncMock(
+            return_value=[Genre.from_api(g) for g in load("rest/services_genres.json")["genres"]]
+        )
         box.get_apps = AsyncMock(return_value=[App.from_api(a) for a in load("rest/apps.json")["apps"]])
         box.get_recordings = AsyncMock(return_value=RecordingList.from_api(load("rest/pvr_list.json")))
         box.get_recording = AsyncMock(
@@ -115,7 +143,9 @@ class FakeBox:
         )
         box.get_media_info = AsyncMock(side_effect=lambda: MediaInfo.from_api({"CurrentURI": self.uri}))
         box.get_position_info = AsyncMock(return_value=PositionInfo.from_api({"RelTime": "0:10:00"}))
-        box.epg.now_and_next = AsyncMock(side_effect=lambda *_: (programme(0), programme(30, "News")))
+        box.epg = self.guide
+        box.territory = "GB"
+        box.book_recording = AsyncMock(return_value=None)
         box.close = AsyncMock()
         for command in (
             "press",
@@ -165,15 +195,20 @@ def auto_enable_custom_integrations(enable_custom_integrations: None) -> None:
 
 
 @pytest.fixture
-def boxes() -> dict[str, FakeBox]:
+def guide() -> MagicMock:
+    return make_guide()
+
+
+@pytest.fixture
+def boxes(guide: MagicMock) -> dict[str, FakeBox]:
     return {
-        GATEWAY_HOST: FakeBox("gateway", GATEWAY_HOST, GATEWAY_SERIAL),
-        MINI_HOST: FakeBox("mini", MINI_HOST, MINI_SERIAL),
+        GATEWAY_HOST: FakeBox("gateway", GATEWAY_HOST, GATEWAY_SERIAL, guide),
+        MINI_HOST: FakeBox("mini", MINI_HOST, MINI_SERIAL, guide),
     }
 
 
 @pytest.fixture
-def mock_skyq(boxes: dict[str, FakeBox]) -> Generator[MagicMock]:
+def mock_skyq(boxes: dict[str, FakeBox], guide: MagicMock) -> Generator[MagicMock]:
     """Patch SkyQBox everywhere; unknown hosts behave like a box that is off."""
     from custom_components.skyq_control.aioskyq import SkyQConnectionError
 
@@ -188,12 +223,14 @@ def mock_skyq(boxes: dict[str, FakeBox]) -> Generator[MagicMock]:
     with (
         patch("custom_components.skyq_control.SkyQBox", side_effect=factory) as cls,
         patch("custom_components.skyq_control.config_flow.SkyQBox", side_effect=factory),
+        patch("custom_components.skyq_control.EpgClient", return_value=guide),
     ):
         yield cls
 
 
 def make_entry(host: str = GATEWAY_HOST, serial: str = GATEWAY_SERIAL, **kwargs: Any) -> MockConfigEntry:
     title = "Sky Q Gateway" if host == GATEWAY_HOST else f"Sky Q Mini ({host})"
+    kwargs.setdefault("minor_version", 2)
     return MockConfigEntry(domain=DOMAIN, unique_id=serial, title=title, data={CONF_HOST: host}, **kwargs)
 
 

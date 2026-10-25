@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import asyncio
 from collections.abc import Awaitable
+from typing import Any
 
 from homeassistant.exceptions import HomeAssistantError
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC, DeviceInfo, format_mac
@@ -56,13 +57,24 @@ def channel_label(channel: Channel) -> str:
     return f"{channel.number} {channel.name}"
 
 
+def _channel_order(channel: Channel) -> tuple[bool, int, str]:
+    number = int(channel.number) if channel.number.isdigit() else 10_000
+    return (channel.is_radio, number, channel.name)
+
+
 def source_channels(data: SkyQData) -> list[Channel]:
-    """Channels to offer as sources: the box's favourites, else the entertainment range (101-199)."""
-    favourites = [data.channels[f.sid] for f in data.favourites if f.sid in data.channels]
-    if favourites:
-        return favourites
-    tv = [c for c in data.channels.values() if c.number.isdigit() and 101 <= int(c.number) <= 199 and not c.is_radio]
-    return sorted(tv, key=lambda c: int(c.number))
+    """Every channel on the box: TV by number, then radio (whose numbers start with 0)."""
+    channels = sorted((c for c in data.channels.values() if c.number.isdigit()), key=_channel_order)
+    # Labels identify a source, so drop the (unlikely) second channel with the same number and name.
+    unique: dict[str, Channel] = {}
+    for channel in channels:
+        unique.setdefault(channel_label(channel), channel)
+    return list(unique.values())
+
+
+def favourite_channels(data: SkyQData) -> list[Channel]:
+    """The box's favourites in its own order (Minis have none)."""
+    return [data.channels[f.sid] for f in sorted(data.favourites, key=lambda f: f.position) if f.sid in data.channels]
 
 
 def user_apps(data: SkyQData) -> list[App]:
@@ -97,7 +109,7 @@ class SkyQEntity(CoordinatorEntity[SkyQCoordinator]):
     def data(self) -> SkyQData:
         return self.coordinator.data
 
-    async def _command(self, action: Awaitable[None]) -> None:
+    async def _command(self, action: Awaitable[Any]) -> None:
         """Run a box command, surface failures to the user, and refresh once the box has reacted."""
         try:
             await action

@@ -134,6 +134,12 @@
     },
     "launch_app": {
       "service": "mdi:apps"
+    },
+    "get_guide": {
+      "service": "mdi:television-guide"
+    },
+    "record": {
+      "service": "mdi:record-rec"
     }
   }
 }

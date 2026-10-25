@@ -19,6 +19,11 @@ REFRESH_DEVICE: Final = 3600
 REFRESH_CATALOGUE: Final = 3600  # channels, favourites, apps
 REFRESH_PVR: Final = 900  # recordings, storage, PIN status
 
+# Guide (EPG) windows, in hours. Sky's guide covers about 8 days ahead.
+GUIDE_BROWSE_HOURS: Final = 24  # a channel's schedule in the media browser
+GUIDE_MAX_HOURS: Final = 48  # the most one get_guide call fetches
+GUIDE_MAX_DAYS_AHEAD: Final = 8
+
 MANUAL_ENTRY: Final = "manual"
 
 # Keys removed from diagnostics. Matches what tools/skyq_probe.py redacts.

@@ -375,13 +375,23 @@ class SkyQBox:
     # ------------------------------------------------------------------ EPG
 
     @property
+    def territory(self) -> str:
+        """Guide territory: the one given, else from the box's country code once known, else GB."""
+        territory = self._territory
+        if territory is None and self.device_info and self.device_info.country_code:
+            territory = TERRITORIES.get(self.device_info.country_code.upper())
+        return territory or "GB"
+
+    @property
     def epg(self) -> EpgClient:
         if self._epg is None:
-            territory = self._territory
-            if territory is None and self.device_info and self.device_info.country_code:
-                territory = TERRITORIES.get(self.device_info.country_code.upper())
-            self._epg = EpgClient(self._session, territory or "GB")
+            self._epg = EpgClient(self._session, self.territory)
         return self._epg
+
+    @epg.setter
+    def epg(self, client: EpgClient) -> None:
+        """Share one guide client (and its cache) between boxes in the same household."""
+        self._epg = client
 
     async def get_schedule(
         self, channels: Iterable[int | Channel], day: date | None = None

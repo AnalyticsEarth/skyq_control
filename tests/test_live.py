@@ -17,9 +17,9 @@ from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 from pytest_homeassistant_custom_component.components.diagnostics import get_diagnostics_for_config_entry
-from pytest_homeassistant_custom_component.typing import ClientSessionGenerator
+from pytest_homeassistant_custom_component.typing import ClientSessionGenerator, WebSocketGenerator
 
-from custom_components.skyq_control.aioskyq import PowerState
+from custom_components.skyq_control.aioskyq import Key, PowerState
 from custom_components.skyq_control.const import DOMAIN
 
 GATEWAY = os.environ.get("SKYQ_GATEWAY", "")
@@ -48,7 +48,11 @@ def allow_boxes(socket_enabled: None, monkeypatch: pytest.MonkeyPatch) -> None:
 
 
 async def test_live_household(
-    hass: HomeAssistant, hass_client: ClientSessionGenerator, device_registry: dr.DeviceRegistry, allow_boxes: None
+    hass: HomeAssistant,
+    hass_client: ClientSessionGenerator,
+    hass_ws_client: WebSocketGenerator,
+    device_registry: dr.DeviceRegistry,
+    allow_boxes: None,
 ) -> None:
     import aiohttp
     from homeassistant.setup import async_setup_component
@@ -68,6 +72,7 @@ async def test_live_household(
         entry.add_to_hass(hass)
         entries.append(entry)
     assert await async_setup_component(hass, DOMAIN, {})  # sets up every entry
+    assert await async_setup_component(hass, "diagnostics", {})  # before the websocket client freezes the router
     await hass.async_block_till_done()
 
     try:
@@ -119,8 +124,77 @@ async def test_live_household(
             print(
                 f"{entry.title:12} {player.entity_id}: {player.state}"
                 f" | {player.attributes.get('media_channel', '-')} | {player.attributes.get('media_title', '-')}"
-                f" | app={player.attributes.get('app_name', '-')} | sources={len(player.attributes.get('source_list', []))}"
+                f" | app={player.attributes.get('app_name', '-')}"
+                f" | sources={len(player.attributes.get('source_list', []))}"
             )
+
+        # Every key button is enabled.
+        buttons = [e for e in er.async_entries_for_config_entry(registry, gateway.entry_id) if e.domain == "button"]
+        assert len(buttons) == len(Key) and not any(e.disabled for e in buttons)
+
+        # The guide: the shared client, the media browser and get_guide.
+        player_id = next(
+            e.entity_id
+            for e in er.async_entries_for_config_entry(registry, gateway.entry_id)
+            if e.domain == "media_player"
+        )
+        client = await hass_ws_client(hass)
+        started = asyncio.get_running_loop().time()
+        await client.send_json_auto_id(
+            {
+                "type": "media_player/browse_media",
+                "entity_id": player_id,
+                "media_content_id": "genre:12",
+                "media_content_type": "genre:12",
+            }
+        )
+        response = await client.receive_json()
+        assert response["success"], response
+        channels = response["result"]["children"]
+        with_titles = [c for c in channels if " · " in c["title"]]
+        print(
+            f"browse Entertainment: {len(channels)} channels, {len(with_titles)} with what's on,"
+            f" {asyncio.get_running_loop().time() - started:.1f}s"
+        )
+        assert len(with_titles) > len(channels) / 2
+        await client.send_json_auto_id(
+            {
+                "type": "media_player/browse_media",
+                "entity_id": player_id,
+                "media_content_id": channels[0]["media_content_id"],
+                "media_content_type": "channel",
+            }
+        )
+        schedule = (await client.receive_json())["result"]["children"]
+        print(f"browse {channels[0]['title']}: {[p['title'] for p in schedule[:4]]}")
+        assert schedule and schedule[0]["can_play"]
+
+        response = await hass.services.async_call(
+            DOMAIN,
+            "get_guide",
+            {"entity_id": player_id, "channels": ["101", "401"], "hours": 3},
+            blocking=True,
+            return_response=True,
+        )
+        programmes = response[player_id]["programmes"]
+        print("get_guide 101/401:", [(p["channel_number"], p["start"][11:16], p["title"]) for p in programmes][:8])
+        assert {p["channel_number"] for p in programmes} == {"101", "401"}
+        assert all(p["event_id"].startswith("E") for p in programmes)
+
+        started = asyncio.get_running_loop().time()
+        response = await hass.services.async_call(
+            DOMAIN,
+            "get_guide",
+            {"entity_id": player_id, "search": "news", "hours": 1},
+            blocking=True,
+            return_response=True,
+        )
+        found = response[player_id]["programmes"]
+        print(f"search 'news': {len(found)} in {asyncio.get_running_loop().time() - started:.1f}s")
+        assert found
+        from custom_components.skyq_control import GUIDE_CLIENTS
+
+        assert len(hass.data[GUIDE_CLIENTS]) == 1  # every box shares one guide cache
 
         diagnostics = await get_diagnostics_for_config_entry(hass, hass_client, gateway)
         assert diagnostics["device"]["serialNumber"] == "**REDACTED**"

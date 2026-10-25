@@ -10,6 +10,7 @@ from freezegun.api import FrozenDateTimeFactory
 from homeassistant.config_entries import ConfigEntryState
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import entity_registry as er
 from pytest_homeassistant_custom_component.common import MockConfigEntry, async_fire_time_changed
 from pytest_homeassistant_custom_component.components.diagnostics import get_diagnostics_for_config_entry
 from pytest_homeassistant_custom_component.typing import ClientSessionGenerator
@@ -48,6 +49,27 @@ async def test_setup_and_unload(hass: HomeAssistant, boxes: dict[str, FakeBox]) 
     await hass.async_block_till_done()
     assert entry.state is ConfigEntryState.NOT_LOADED
     boxes[GATEWAY_HOST].mock.close.assert_awaited()
+
+
+async def test_migration_enables_key_buttons(hass: HomeAssistant, entity_registry: er.EntityRegistry) -> None:
+    """1.1 created most buttons disabled; 1.2 enables them, but keeps ones the user disabled."""
+    entry = make_entry(minor_version=1)
+    entry.add_to_hass(hass)
+    by_integration = entity_registry.async_get_or_create(
+        "button",
+        DOMAIN,
+        f"{GATEWAY_SERIAL}_key_digit_5",
+        config_entry=entry,
+        disabled_by=er.RegistryEntryDisabler.INTEGRATION,
+    )
+    by_user = entity_registry.async_get_or_create(
+        "button", DOMAIN, f"{GATEWAY_SERIAL}_key_text", config_entry=entry, disabled_by=er.RegistryEntryDisabler.USER
+    )
+    await _setup_entry(hass, entry)
+    assert entry.minor_version == 2
+    assert not entity_registry.async_get(by_integration.entity_id).disabled
+    assert entity_registry.async_get(by_user.entity_id).disabled_by is er.RegistryEntryDisabler.USER
+    assert hass.states.get(by_integration.entity_id) is not None
 
 
 async def test_device_registry(hass: HomeAssistant, device_registry: dr.DeviceRegistry) -> None:

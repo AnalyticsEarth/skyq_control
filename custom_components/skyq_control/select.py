@@ -23,7 +23,7 @@ async def async_setup_entry(
 
 
 class SkyQChannelSelect(SkyQEntity, SelectEntity):
-    """Favourite channels (or 101-199 when the box has no favourites)."""
+    """Every channel on the box; selecting one types its number."""
 
     def __init__(self, coordinator: SkyQCoordinator) -> None:
         super().__init__(coordinator, "channel")

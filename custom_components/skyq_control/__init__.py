@@ -8,16 +8,18 @@ import voluptuous as vol
 from homeassistant.components.media_player import DOMAIN as MEDIA_PLAYER_DOMAIN
 from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 from homeassistant.const import CONF_HOST, Platform
-from homeassistant.core import HomeAssistant, callback
+from homeassistant.core import HomeAssistant, SupportsResponse, callback
 from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import device_registry as dr
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 from homeassistant.helpers.service import async_register_platform_entity_service
 from homeassistant.helpers.typing import ConfigType
+from homeassistant.util.hass_dict import HassKey
 
-from .aioskyq import DeviceInfo, SkyQBox
-from .const import CONF_KEY_GAP, DEFAULT_KEY_GAP, DOMAIN
+from .aioskyq import DeviceInfo, EpgClient, SkyQBox
+from .const import CONF_KEY_GAP, DEFAULT_KEY_GAP, DOMAIN, GUIDE_MAX_HOURS
 from .coordinator import SkyQCoordinator
 from .entity import device_identifier, device_info_for
 
@@ -27,9 +29,12 @@ PLATFORMS: list[Platform] = [Platform.BUTTON, Platform.MEDIA_PLAYER, Platform.RE
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
+# One guide client per territory, so every box in the house shares its cache (and Sky sees fewer requests).
+GUIDE_CLIENTS: HassKey[dict[str, EpgClient]] = HassKey(f"{DOMAIN}_guide")
 
-def _key_list(value: object) -> list[str]:
-    """Accept a list of keys or comma-separated text ("backup, 1, 0, 1")."""
+
+def _comma_list(value: object) -> list[str]:
+    """Accept a list or comma-separated text ("backup, 1, 0, 1")."""
     return [key.strip() for item in cv.ensure_list(value) for key in str(item).split(",") if key.strip()]
 
 
@@ -44,7 +49,7 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         "send_keys",
         entity_domain=MEDIA_PLAYER_DOMAIN,
         schema={
-            vol.Required("keys"): vol.All(_key_list, vol.Length(min=1)),
+            vol.Required("keys"): vol.All(_comma_list, vol.Length(min=1)),
             vol.Optional("delay"): vol.All(vol.Coerce(float), vol.Range(min=0, max=5)),
         },
         func="async_send_keys",
@@ -65,7 +70,36 @@ async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
         schema={vol.Required("app"): cv.string},
         func="async_launch_app",
     )
+    async_register_platform_entity_service(
+        hass,
+        DOMAIN,
+        "get_guide",
+        entity_domain=MEDIA_PLAYER_DOMAIN,
+        schema={
+            vol.Optional("channels"): vol.All(_comma_list, [cv.string]),
+            vol.Optional("start"): cv.datetime,
+            vol.Optional("hours", default=6): vol.All(vol.Coerce(float), vol.Range(min=0.5, max=GUIDE_MAX_HOURS)),
+            vol.Optional("search"): cv.string,
+        },
+        func="async_get_guide",
+        supports_response=SupportsResponse.ONLY,
+    )
+    async_register_platform_entity_service(
+        hass,
+        DOMAIN,
+        "record",
+        entity_domain=MEDIA_PLAYER_DOMAIN,
+        schema={vol.Required("event_id"): cv.string, vol.Optional("series", default=False): cv.boolean},
+        func="async_record",
+    )
     return True
+
+
+def guide_client(hass: HomeAssistant, territory: str) -> EpgClient:
+    clients = hass.data.setdefault(GUIDE_CLIENTS, {})
+    if territory not in clients:
+        clients[territory] = EpgClient(async_get_clientsession(hass), territory)
+    return clients[territory]
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: SkyQConfigEntry) -> bool:
@@ -90,10 +124,24 @@ async def async_setup_entry(hass: HomeAssistant, entry: SkyQConfigEntry) -> bool
             translation_placeholders={"host": entry.data[CONF_HOST]},
         )
 
+    box.epg = guide_client(hass, box.territory)  # the territory is known once device info has been read
     entry.runtime_data = coordinator
     async_register_device(hass, entry, device)
     await coordinator.async_start_push()
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
+    return True
+
+
+async def async_migrate_entry(hass: HomeAssistant, entry: SkyQConfigEntry) -> bool:
+    if entry.version > 1:
+        return False  # a downgrade from a future version
+    if entry.minor_version < 2:
+        # 1.1 created most key buttons disabled; 1.2 enables them all. Buttons the user disabled stay disabled.
+        registry = er.async_get(hass)
+        for entity in er.async_entries_for_config_entry(registry, entry.entry_id):
+            if entity.domain == Platform.BUTTON and entity.disabled_by is er.RegistryEntryDisabler.INTEGRATION:
+                registry.async_update_entity(entity.entity_id, disabled_by=None)
+        hass.config_entries.async_update_entry(entry, minor_version=2)
     return True
 
 

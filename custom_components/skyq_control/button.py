@@ -15,33 +15,6 @@ from .entity import SkyQEntity
 
 PARALLEL_UPDATES = 1
 
-# Keys most dashboards need; the rest are created disabled so four boxes don't flood the UI.
-ENABLED_BY_DEFAULT = {
-    Key.POWER,
-    Key.SELECT,
-    Key.BACKUP,
-    Key.UP,
-    Key.DOWN,
-    Key.LEFT,
-    Key.RIGHT,
-    Key.CHANNEL_UP,
-    Key.CHANNEL_DOWN,
-    Key.PLAY,
-    Key.PAUSE,
-    Key.STOP,
-    Key.RECORD,
-    Key.FAST_FORWARD,
-    Key.REWIND,
-    Key.TV_GUIDE,
-    Key.SKY,
-    Key.I,
-    Key.RED,
-    Key.GREEN,
-    Key.YELLOW,
-    Key.BLUE,
-    Key.RED_BUTTON,
-}
-
 
 @dataclass(frozen=True, kw_only=True)
 class SkyQButtonDescription(ButtonEntityDescription):
@@ -53,7 +26,6 @@ BUTTONS = tuple(
         key=f"key_{key.name.lower()}",
         translation_key=f"key_{key.name.lower()}",
         sky_key=key,
-        entity_registry_enabled_default=key in ENABLED_BY_DEFAULT,
     )
     for key in Key
 )

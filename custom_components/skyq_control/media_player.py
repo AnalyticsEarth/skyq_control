@@ -3,23 +3,26 @@
 from __future__ import annotations
 
 import asyncio
-from datetime import datetime
+from datetime import datetime, timedelta
 from typing import Any
 
 from homeassistant.components.media_player import (
+    BrowseMedia,
     MediaPlayerDeviceClass,
     MediaPlayerEntity,
     MediaPlayerEntityFeature,
     MediaPlayerState,
     MediaType,
 )
-from homeassistant.core import HomeAssistant
-from homeassistant.exceptions import ServiceValidationError
+from homeassistant.core import HomeAssistant, ServiceResponse
+from homeassistant.exceptions import HomeAssistantError, ServiceValidationError
 from homeassistant.helpers.entity_platform import AddConfigEntryEntitiesCallback
+from homeassistant.util import dt as dt_util
 
 from . import SkyQConfigEntry
-from .aioskyq import Key, PowerState, TransportState
+from .aioskyq import Channel, EpgEvent, Key, PowerState, SkyQError, TransportState
 from .aioskyq.remote import resolve_key
+from .browse_media import browse
 from .const import DOMAIN
 from .coordinator import SkyQCoordinator
 from .entity import SkyQEntity, channel_label, source_channels, user_apps, visible_app
@@ -49,6 +52,7 @@ class SkyQMediaPlayer(SkyQEntity, MediaPlayerEntity):
         | MediaPlayerEntityFeature.PREVIOUS_TRACK
         | MediaPlayerEntityFeature.SELECT_SOURCE
         | MediaPlayerEntityFeature.PLAY_MEDIA
+        | MediaPlayerEntityFeature.BROWSE_MEDIA
     )
 
     def __init__(self, coordinator: SkyQCoordinator) -> None:
@@ -183,6 +187,7 @@ class SkyQMediaPlayer(SkyQEntity, MediaPlayerEntity):
         if data.next_programme:
             attributes["next_programme"] = data.next_programme.title
             attributes["next_programme_start"] = data.next_programme.start.isoformat()
+            attributes["next_event_id"] = data.next_programme.eid
         if data.recording:
             attributes["recording_id"] = data.recording.pvrid
         if data.transport and data.transport.speed not in (None, 1.0):
@@ -215,12 +220,15 @@ class SkyQMediaPlayer(SkyQEntity, MediaPlayerEntity):
     async def async_select_source(self, source: str) -> None:
         channel = next((c for c in source_channels(self.data) if channel_label(c) == source), None)
         if channel is None:
-            channel = next((c for c in self.data.channels.values() if channel_label(c) == source), None)
-        if channel is None:
             raise ServiceValidationError(
                 translation_domain=DOMAIN, translation_key="unknown_source", translation_placeholders={"source": source}
             )
         await self._command(self.coordinator.box.change_channel(channel.number))
+
+    async def async_browse_media(
+        self, media_content_type: MediaType | str | None = None, media_content_id: str | None = None
+    ) -> BrowseMedia:
+        return await browse(self.data, self.coordinator.box.epg, media_content_type, media_content_id)
 
     async def async_play_media(self, media_type: MediaType | str, media_id: str, **kwargs: Any) -> None:
         """channel: a number ("101") or "sid:3008"; app: an app id or title; keys: "up,up,select"."""
@@ -283,3 +291,83 @@ class SkyQMediaPlayer(SkyQEntity, MediaPlayerEntity):
                 await box.press(key)
 
         await self._command(press_with_delay())
+
+    async def async_get_guide(
+        self,
+        channels: list[str] | None = None,
+        start: datetime | None = None,
+        hours: float = 6,
+        search: str | None = None,
+    ) -> ServiceResponse:
+        """Programmes from the guide: on the given channels, else every channel when searching, else this
+        box's current channel. Event IDs can be passed to the record action."""
+        data = self.data
+        if channels:
+            wanted = list({c.sid: c for c in (self._find_channel(ref) for ref in channels)}.values())
+        elif search:
+            wanted = [c for c in source_channels(data) if c.has_schedule]
+        elif data.channel:
+            wanted = [data.channel]
+        else:
+            raise ServiceValidationError(translation_domain=DOMAIN, translation_key="no_channel")
+        start = dt_util.as_utc(start) if start else dt_util.utcnow()
+        try:
+            schedule = await self.coordinator.box.epg.get_schedule(wanted, start, start + timedelta(hours=hours))
+        except SkyQError as err:
+            raise HomeAssistantError(
+                translation_domain=DOMAIN,
+                translation_key="guide_unavailable",
+                translation_placeholders={"error": str(err)},
+            ) from err
+        needle = search.casefold().strip() if search else None
+        programmes = [
+            (channel, event)
+            for channel in wanted
+            for event in schedule.get(channel.sid, ())
+            if needle is None or needle in event.title.casefold()
+        ]
+        programmes.sort(key=lambda item: (item[1].start, wanted.index(item[0])))
+        return {"programmes": [_programme(channel, event) for channel, event in programmes]}
+
+    async def async_record(self, event_id: str, series: bool = False) -> None:
+        """Book a guide event (an event ID from get_guide or the media player's attributes)."""
+        await self._command(self.coordinator.box.book_recording(event_id.strip(), series=series))
+
+    def _find_channel(self, ref: str) -> Channel:
+        """A channel by number ("101"), service ID ("sid:3008") or name, case-insensitively."""
+        ref = str(ref).strip()
+        channels = source_channels(self.data)
+        if ref.startswith("sid:") and ref[4:].isdigit():
+            match = self.data.channels.get(int(ref[4:]))
+        elif ref.isdigit():
+            match = next((c for c in channels if c.number == ref), None)
+        else:
+            match = next((c for c in channels if c.name.casefold() == ref.casefold()), None)
+        if match is None:
+            raise ServiceValidationError(
+                translation_domain=DOMAIN, translation_key="unknown_channel", translation_placeholders={"channel": ref}
+            )
+        return match
+
+
+def _programme(channel: Channel, event: EpgEvent) -> dict[str, Any]:
+    return {
+        "channel": channel.name,
+        "channel_number": channel.number,
+        "service_id": channel.sid,
+        "event_id": event.eid,
+        "title": event.title,
+        "start": dt_util.as_local(event.start).isoformat(),
+        "end": dt_util.as_local(event.end).isoformat(),
+        "synopsis": event.synopsis,
+        "season": event.season,
+        "episode": event.episode,
+        "image": event.image_url,
+        "new": event.new,
+        "hd": event.hd,
+        "subtitles": event.subtitles,
+        "audio_description": event.audio_description,
+        "rating": event.rating,
+        "can_record": event.can_book,
+        "can_series_link": event.can_series_link,
+    }

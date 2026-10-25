@@ -88,6 +88,18 @@
     },
     "unsupported_media_type": {
       "message": "Can't play media of type {media_type}. Use channel, app or keys."
+    },
+    "no_channel": {
+      "message": "This box isn't showing a TV channel. Name the channels to look up."
+    },
+    "unknown_channel": {
+      "message": "{channel} isn't one of this box's channels."
+    },
+    "guide_unavailable": {
+      "message": "Sky's TV guide couldn't be reached: {error}"
+    },
+    "unknown_media": {
+      "message": "{media_id} isn't something this box can browse."
     }
   },
   "entity": {
@@ -248,6 +260,42 @@
         "app": {
           "name": "App",
           "description": "App name or ID, for example YouTube or Netflix."
+        }
+      }
+    },
+    "get_guide": {
+      "name": "Get TV guide",
+      "description": "Returns programmes from Sky's TV guide, with event IDs you can pass to Record.",
+      "fields": {
+        "channels": {
+          "name": "Channels",
+          "description": "Channel numbers, names or sid:service IDs. Leave empty for the channel the box is showing, or for every channel when searching."
+        },
+        "start": {
+          "name": "Start",
+          "description": "Start of the time window. Leave empty for now. The guide covers about 8 days ahead."
+        },
+        "hours": {
+          "name": "Hours",
+          "description": "Length of the time window."
+        },
+        "search": {
+          "name": "Search",
+          "description": "Only return programmes whose title contains this text."
+        }
+      }
+    },
+    "record": {
+      "name": "Record",
+      "description": "Books a recording of a programme from the TV guide. Recordings are stored on the gateway; booking from a Mini works too.",
+      "fields": {
+        "event_id": {
+          "name": "Event ID",
+          "description": "The programme's event ID, from Get TV guide or the media player's event_id attribute."
+        },
+        "series": {
+          "name": "Series link",
+          "description": "Record every episode of the series."
         }
       }
     }

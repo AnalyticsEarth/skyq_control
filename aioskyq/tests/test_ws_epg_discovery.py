@@ -124,6 +124,16 @@ async def test_epg_now_next_and_find(gateway: FakeSkyQ, session: aiohttp.ClientS
     assert await client.find_event(3008, "nope", days=0) is None
 
 
+async def test_epg_schedule_many_channels(gateway: FakeSkyQ, session: aiohttp.ClientSession) -> None:
+    client = epg(gateway, session)
+    day = await client.get_day([3008, 2075], FIXTURE_DAY)
+    start, end = day[3008][3].start, day[3008][6].start
+    schedule = await client.get_schedule([3008, 2075, 9999], start, end)
+    assert [e.eid for e in schedule[3008]] == [e.eid for e in day[3008][3:6]]
+    assert schedule[2075] and all(e.end > start and e.start < end for e in schedule[2075])
+    assert schedule[9999] == []  # a channel with no guide data is still answered
+
+
 async def test_epg_errors(session: aiohttp.ClientSession) -> None:
     client = EpgClient(session, hawk_base="http://127.0.0.1:1/hawk")
     with pytest.raises(SkyQConnectionError):

@@ -72,6 +72,7 @@ class SkyQData:
     # Catalogue (slow)
     channels: dict[int, Channel] = field(default_factory=dict)
     favourites: list[Favourite] = field(default_factory=list)
+    genres: dict[int, str] = field(default_factory=dict)  # channel genre (sg) -> name
     apps: dict[str, App] = field(default_factory=dict)
     # PVR (gateway, or a Mini whose gateway isn't configured)
     recordings: RecordingList | None = None
@@ -163,11 +164,12 @@ class SkyQCoordinator(DataUpdateCoordinator[SkyQData]):
     async def _refresh_catalogue(self, data: SkyQData) -> None:
         if not self._is_due("catalogue"):
             return
-        channels, favourites, apps = await asyncio.gather(
-            self.box.get_channels(refresh=True), self.box.get_favourites(), self.box.get_apps()
+        channels, favourites, genres, apps = await asyncio.gather(
+            self.box.get_channels(refresh=True), self.box.get_favourites(), self.box.get_genres(), self.box.get_apps()
         )
         data.channels = {channel.sid: channel for channel in channels}
         data.favourites = favourites
+        data.genres = {genre.genre: genre.title for genre in genres}
         data.apps = {app.app_id: app for app in apps}
         self._mark("catalogue", REFRESH_CATALOGUE)
 

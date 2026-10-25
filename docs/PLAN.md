@@ -145,6 +145,15 @@ The boxes probed were one gateway (ES140, `192.168.1.50`) and three Minis (EM150
 
 ## 4. Architecture
 
+**v0.3.0 (2026-10-25): guide work from Phase 5, plus two Phase 3 changes.**
+- **Buttons:** every key button is enabled by default. Config entry 1.2 migrates older entries by re-enabling buttons the integration had disabled. Buttons the user disabled stay disabled.
+- **Sources:** the media player and Channel select list every channel (377 on the gateway): TV by number, then radio. Favourites live in the media browser.
+- **Guide in the media browser:** Favourites, one folder per genre (ordered by lowest channel number, as in Sky's guide) and Apps. Each channel shows what's on now, plays (tunes) and expands to the next 24 h of programmes. Only the programme on now is playable.
+- **Actions:** `get_guide` (response only; channels, start, hours ≤ 48, title search across every channel) and `record` (event ID, optional series link). The media player also exposes `next_event_id`.
+- **One guide client per territory**, shared by every box (`hass.data`), so the cache is shared. Live: a genre folder of 107 channels with what's on loads in 0.7 s, and searching every channel for an hour takes 1.5 s.
+- `aioskyq`: `EpgClient.get_schedule(channels, start, end)`, `SkyQBox.territory`, and a settable `SkyQBox.epg`.
+- Still to come from Phase 5: PVR management actions, the recordings calendar, and tests of booking from HA on a real box.
+
 **Phase 3 status:** done (2026-10-25, v0.2.0).
 - **Entities:** a media player, a remote, a button per key (23 enabled by default) and channel/app selects.
 - **Actions:** `send_keys`, `change_channel` and `launch_app`, registered once in `async_setup`.

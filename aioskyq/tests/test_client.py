@@ -12,6 +12,7 @@ import pytest
 
 from aioskyq import (
     AppsStatus,
+    EpgClient,
     Key,
     PowerState,
     PvrStatus,
@@ -242,7 +243,10 @@ async def test_push_subscriptions(gw_client: SkyQBox, gateway: FakeSkyQ) -> None
 async def test_owned_session_and_context_manager(gateway: FakeSkyQ) -> None:
     async with SkyQBox("127.0.0.1", rest_port=gateway.rest_port) as box:
         assert (await box.get_device_info()).is_gateway
-        assert box.epg.territory == "GB"
+        assert box.territory == box.epg.territory == "GB"
+        shared = EpgClient(box._session, "GB")
+        box.epg = shared
+        assert box.epg is shared
     assert box._session.closed
 
 

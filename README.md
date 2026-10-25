@@ -2,21 +2,33 @@
 
 A local-push Home Assistant integration that aims to expose **every control and every piece of metadata** a Sky Q box offers on the local network. It supports gateways and Minis. Sky Glass and Sky Stream use a different platform and are not supported.
 
-> **Status: v0.2.0.** Controls are in: a media player, a remote, a button for every remote key, channel and app pickers, and actions for automations. Sensors, the recordings calendar and the media browser come next. See [docs/PLAN.md](docs/PLAN.md).
+> **Status: v0.3.0.** Controls and the TV guide are in: a media player with a guide browser, a remote, a button for every remote key, channel and app pickers, and actions for automations, including guide lookups and booking recordings. Sensors and the recordings calendar come next. See [docs/PLAN.md](docs/PLAN.md).
 
 ## What you get per box
 
 | Entity | What it does |
 |---|---|
-| **Media player** (`media_player.sky_q_…`) | On/off, play/pause/stop, channel up/down (next/previous), and a channel picker (the box's favourites, or channels 101–199 if it has none). Shows the channel, the current programme with artwork and a live progress bar, the next programme, a recording's title and position, or the app on screen. |
+| **Media player** (`media_player.sky_q_…`) | On/off, play/pause/stop, channel up/down (next/previous), and a source list of every channel on the box. Shows the channel, the current programme with artwork and a live progress bar, the next programme, a recording's title and position, or the app on screen. **Browse media** opens the TV guide: favourites, channels by genre (each showing what's on now) and apps. Open a channel to see its next 24 hours; play a channel to tune to it. |
 | **Remote** (`remote.sky_q_…`) | Every remote key through `remote.send_command`, with repeats and delays. Works with HA's remote card. |
-| **Buttons** | One per remote key. Navigation, transport, colour keys, the red button, Sky, TV guide and info are enabled. Digits, Box Office, Help, Services, Interactive and Text are created disabled; enable them if you want them. |
-| **Selects** | **Channel** (favourites) and **App** (installed apps such as YouTube and Netflix). Picking an option tunes the channel or opens the app. |
+| **Buttons** | One per remote key, all enabled. |
+| **Selects** | **Channel** (every channel) and **App** (installed apps such as YouTube and Netflix). Picking an option tunes the channel or opens the app. |
 
 **Actions for automations** (target a Sky Q media player):
 - `skyq_control.send_keys`: keys such as `backup, 1, 0, 1` or `tv_guide`, with an optional delay between them.
 - `skyq_control.change_channel`: a channel number such as `101`, or `sid:3008`.
 - `skyq_control.launch_app`: an app name or ID such as `YouTube`.
+- `skyq_control.get_guide` (returns data): programmes on the channels you name (numbers, names or `sid:3008`), or the channel the box is showing, from a start time for up to 48 hours. Add `search` to find a title on every channel. Each programme has an `event_id`.
+- `skyq_control.record`: books a recording from an `event_id`, with `series: true` for a series link.
+
+```yaml
+action: skyq_control.get_guide
+target:
+  entity_id: media_player.sky_q_gateway
+data:
+  search: Match of the Day
+  hours: 48
+response_variable: guide
+```
 
 `media_player.play_media` also accepts `channel`, `app` and `keys` as media types.
 

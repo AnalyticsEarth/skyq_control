@@ -182,13 +182,17 @@ async def test_command_failure_is_reported(hass: HomeAssistant, boxes: dict[str,
         await hass.services.async_call(MP_DOMAIN, "media_play", {ATTR_ENTITY_ID: PLAYER}, blocking=True)
 
 
-async def test_mini_without_favourites_offers_entertainment_range(hass: HomeAssistant) -> None:
+async def test_sources_are_every_channel(hass: HomeAssistant) -> None:
+    """Every channel, not just favourites: TV by number, then radio (numbers like 0101)."""
     await setup_entry(hass, make_entry(MINI_HOST, MINI_SERIAL))
     sources = hass.states.get(f"media_player.sky_q_mini_{MINI_HOST.replace('.', '_')}").attributes[
         ATTR_INPUT_SOURCE_LIST
     ]
-    numbers = [int(s.split(" ", 1)[0]) for s in sources]
-    assert numbers == sorted(numbers) and min(numbers) >= 101 and max(numbers) <= 199
+    assert len(sources) == 377 and sources[0] == "101 BBC One SE HD"
+    tv, radio = sources[:-42], sources[-42:]  # the fixture has 42 radio services
+    tv_numbers = [int(s.split(" ", 1)[0]) for s in tv]
+    assert tv_numbers == sorted(tv_numbers) and max(tv_numbers) < 996
+    assert radio[0].startswith("0101 ") and "996 Chl Line-up" in radio
 
 
 # ------------------------------------------------------------------ actions
@@ -247,9 +251,7 @@ async def test_buttons(hass: HomeAssistant, boxes: dict[str, FakeBox], entity_re
     entry = await setup_entry(hass, make_entry())
     buttons = [e for e in er.async_entries_for_config_entry(entity_registry, entry.entry_id) if e.domain == "button"]
     assert len(buttons) == len(Key)
-    enabled = [e for e in buttons if not e.disabled]
-    assert len(enabled) == 23
-    assert entity_registry.async_get("button.sky_q_gateway_digit_5").disabled
+    assert not any(e.disabled for e in buttons)
     await hass.services.async_call(
         "button", "press", {ATTR_ENTITY_ID: "button.sky_q_gateway_red_button"}, blocking=True
     )
@@ -260,7 +262,7 @@ async def test_selects(hass: HomeAssistant, boxes: dict[str, FakeBox]) -> None:
     await setup_entry(hass, make_entry())
     box = boxes[GATEWAY_HOST].mock
     channel = hass.states.get(CHANNEL_SELECT)
-    assert channel.state == "101 BBC One SE HD" and len(channel.attributes[ATTR_OPTIONS]) == 10
+    assert channel.state == "101 BBC One SE HD" and len(channel.attributes[ATTR_OPTIONS]) == 377
     apps = hass.states.get(APP_SELECT)
     assert apps.attributes[ATTR_OPTIONS] == ["Apple TV", "Disney+", "Netflix", "Services", "YouTube"]  # no EPG_UI
 

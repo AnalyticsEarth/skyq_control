@@ -88,17 +88,25 @@ class EpgClient:
             result[sid] = events
         return result
 
+    async def get_schedule(
+        self, channels: Iterable[ChannelRef], start: datetime, end: datetime
+    ) -> dict[int, list[EpgEvent]]:
+        """Events overlapping [start, end) for each channel, across UTC day boundaries."""
+        refs = list(channels)
+        events: dict[int, dict[str, EpgEvent]] = {ref.sid if isinstance(ref, Channel) else int(ref): {} for ref in refs}
+        day = start.astimezone(UTC).date()
+        while day <= end.astimezone(UTC).date():
+            for sid, day_events in (await self.get_day(refs, day)).items():
+                for event in day_events:
+                    if event.end > start and event.start < end:
+                        events[sid][event.eid] = event
+            day += timedelta(days=1)
+        return {sid: sorted(found.values(), key=lambda e: e.start) for sid, found in events.items()}
+
     async def get_events(self, channel: ChannelRef, start: datetime, end: datetime) -> list[EpgEvent]:
         """Events overlapping [start, end) on one channel, across UTC day boundaries."""
         sid = channel.sid if isinstance(channel, Channel) else int(channel)
-        events: dict[str, EpgEvent] = {}
-        day = start.astimezone(UTC).date()
-        while day <= end.astimezone(UTC).date():
-            for event in (await self.get_day([channel], day)).get(sid, []):
-                if event.end > start and event.start < end:
-                    events[event.eid] = event
-            day += timedelta(days=1)
-        return sorted(events.values(), key=lambda e: e.start)
+        return (await self.get_schedule([channel], start, end))[sid]
 
     async def now_and_next(
         self, channel: ChannelRef, when: datetime | None = None

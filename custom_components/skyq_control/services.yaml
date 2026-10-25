@@ -41,3 +41,46 @@ launch_app:
       example: "YouTube"
       selector:
         text:
+
+get_guide:
+  target:
+    entity:
+      integration: skyq_control
+      domain: media_player
+  fields:
+    channels:
+      example: "101, 102, sid:3008"
+      selector:
+        text:
+          multiple: true
+    start:
+      selector:
+        datetime:
+    hours:
+      default: 6
+      selector:
+        number:
+          min: 0.5
+          max: 48
+          step: 0.5
+          unit_of_measurement: h
+    search:
+      example: "Match of the Day"
+      selector:
+        text:
+
+record:
+  target:
+    entity:
+      integration: skyq_control
+      domain: media_player
+  fields:
+    event_id:
+      required: true
+      example: "Ebc0-39e9"
+      selector:
+        text:
+    series:
+      default: false
+      selector:
+        boolean:
