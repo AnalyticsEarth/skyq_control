@@ -145,6 +145,33 @@ The boxes probed were one gateway (ES140, `192.168.1.50`) and three Minis (EM150
 
 ## 4. Architecture
 
+**v0.4.0 (2026-10-25): Phase 4 metadata.**
+- **Sensors (primary):**
+  - what's on: channel, programme (or the recording being played), when the programme ends, next programme, app on screen, playback state;
+  - recorder: disk usage %, disk used, free and size, counts of recordings (recorded including part-recorded, scheduled, failed, deleted), recording now (titles in attributes), next recording (timestamp, with title and channel).
+- **Sensors (diagnostic):**
+  - software version, firmware build, last boot, wake reason, PIN tries left;
+  - gateway address (Minis), bouquet/sub-bouquet (country in attributes), guide available until, software update;
+  - entitlements (count, list in attributes) and smartcard state;
+  - household ID and viewing-card number, both disabled by default.
+- **Binary sensors:**
+  - power, recording, watching a recording;
+  - gateway connection (Minis, with the reason as an attribute);
+  - network, plus recorder, DRM and guide-data problems;
+  - software update and smartcard active;
+  - UHD, HDR, picture-in-picture and streaming capable.
+- **Images:** programme artwork (or a recording's) and the channel logo. They're unavailable while there's nothing to show.
+- **Recorder entities** exist only on the box that fetches recordings: the gateway, or a Mini whose gateway isn't set up. When the gateway is added later, the Mini's copies go unavailable at once and are removed on its next reload.
+- **Not built, because the boxes don't report them:**
+  - HDMI and HDCP state, sink UHD/HLG, UHD configured and 2160p10bit: current firmware sends no `hdmi` section in `system/status`, only a `systemupdates.hdmi` counter;
+  - the CA message, which isn't sent either.
+  - Both can be added if a firmware ever sends them.
+- **Not built, for low value:** UTC offset and next DST transition (HA knows its own time zone), and the adult-channel flag.
+- **Found live:**
+  - `swupdate.state` is the literal word `unavailable` when idle, which HA would treat as the entity being unavailable. The sensor shows the reason (`idle`) and keeps the state as an attribute.
+  - In standby, Minis report `gatewayservices` as `unavailable` with the reason "connection suspended for low power mode".
+  - Boot time is computed only when device info is fetched (hourly), and is held steady within 2 minutes.
+
 **v0.3.0 (2026-10-25): guide work from Phase 5, plus two Phase 3 changes.**
 - **Buttons:** every key button is enabled by default. Config entry 1.2 migrates older entries by re-enabling buttons the integration had disabled. Buttons the user disabled stay disabled.
 - **Sources:** the media player and Channel select list every channel (377 on the gateway): TV by number, then radio. Favourites live in the media browser.
@@ -250,7 +277,7 @@ Ship a ready-made dashboard (YAML in `docs/dashboard.yaml`) that has a full remo
 | 1. `aioskyq` library | Async client and models built from the fixtures; pytest with mocked aiohttp/TCP | ≥90 % coverage; runs against a live box from the CLI |
 | 2. Integration skeleton | Config flow (SSDP + manual + options), coordinator, device registry (gateway/Mini), diagnostics with redaction, translations | Box discovered and added; diagnostics download works |
 | 3. Controls | `media_player`, `remote`, `button`, `select`, `send_keys`/`change_channel` actions | Every key can be pressed from the UI |
-| 4. Metadata | All sensors and binary sensors from §5, plus `image` | Every field in §3 maps to an entity or attribute |
+| 4. Metadata ✅ v0.4.0 | All sensors and binary sensors from §5, plus `image` | Every field in §3 maps to an entity or attribute |
 | 5. PVR & EPG | PVR actions, calendar, response actions, browse media, now/next | Booking, keeping, locking and deleting work end to end |
 | 6. Events & polish | Event entities, device triggers, dashboard YAML, HACS packaging (`hacs.json`, hassfest + HACS GitHub Actions), README, quality-scale checklist | Passes hassfest and HACS validation; tagged release |
 

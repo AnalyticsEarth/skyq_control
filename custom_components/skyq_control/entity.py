@@ -3,14 +3,16 @@
 from __future__ import annotations
 
 import asyncio
-from collections.abc import Awaitable
+from collections.abc import Awaitable, Iterable
 from typing import Any
 
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import HomeAssistantError
+from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC, DeviceInfo, format_mac
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from .aioskyq import App, Channel, SkyQError
+from .aioskyq import App, Channel, Recording, RecordingStatus, SkyQError
 from .aioskyq import DeviceInfo as SkyQDeviceInfo
 from .const import DOMAIN
 from .coordinator import SkyQCoordinator, SkyQData
@@ -77,6 +79,12 @@ def favourite_channels(data: SkyQData) -> list[Channel]:
     return [data.channels[f.sid] for f in sorted(data.favourites, key=lambda f: f.position) if f.sid in data.channels]
 
 
+def recordings(data: SkyQData, *statuses: RecordingStatus) -> list[Recording]:
+    """Recordings not in the trash, optionally of the given statuses."""
+    items = data.recordings.recordings if data.recordings else ()
+    return [r for r in items if not r.is_deleted and (not statuses or r.status in statuses)]
+
+
 def user_apps(data: SkyQData) -> list[App]:
     apps = [
         app
@@ -93,6 +101,21 @@ def visible_app(data: SkyQData) -> App | None:
     return data.apps.get(data.visible_app) or App.from_api({"appId": data.visible_app})
 
 
+def unique_id_for(coordinator: SkyQCoordinator, key: str) -> str:
+    return f"{coordinator.data.device.unique_id or coordinator.config_entry.entry_id}_{key}"
+
+
+@callback
+def async_remove_stale_entities(
+    hass: HomeAssistant, coordinator: SkyQCoordinator, domain: str, keys: Iterable[str]
+) -> None:
+    """Drop entities this box no longer gets (a Mini's recorder entities once its gateway is set up)."""
+    registry = er.async_get(hass)
+    for key in keys:
+        if entity_id := registry.async_get_entity_id(domain, DOMAIN, unique_id_for(coordinator, key)):
+            registry.async_remove(entity_id)
+
+
 class SkyQEntity(CoordinatorEntity[SkyQCoordinator]):
     """Base class: one device per box, names come from translation keys."""
 
@@ -101,13 +124,20 @@ class SkyQEntity(CoordinatorEntity[SkyQCoordinator]):
     def __init__(self, coordinator: SkyQCoordinator, key: str) -> None:
         super().__init__(coordinator)
         device = coordinator.data.device
-        self._attr_unique_id = f"{device.unique_id or coordinator.config_entry.entry_id}_{key}"
+        self._attr_unique_id = unique_id_for(coordinator, key)
         self._attr_translation_key = key
         self._attr_device_info = DeviceInfo(identifiers={device_identifier(device, coordinator.host)})
 
     @property
     def data(self) -> SkyQData:
         return self.coordinator.data
+
+    def _has_data(self, *, pvr: bool = False, status: bool = False) -> bool:
+        """pvr: needs the household's recordings, which only the gateway fetches once it's set up.
+        status: needs the system/status push, which arrives just after setup."""
+        if pvr and (not self.coordinator.fetches_pvr or self.data.recordings is None):
+            return False
+        return not (status and self.data.system_status is None)
 
     async def _command(self, action: Awaitable[Any]) -> None:
         """Run a box command, surface failures to the user, and refresh once the box has reacted."""

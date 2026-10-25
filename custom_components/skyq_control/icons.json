@@ -123,6 +123,138 @@
       "app": {
         "default": "mdi:apps"
       }
+    },
+    "sensor": {
+      "current_channel": {
+        "default": "mdi:television-classic"
+      },
+      "programme": {
+        "default": "mdi:television-play"
+      },
+      "programme_end": {
+        "default": "mdi:clock-end"
+      },
+      "next_programme": {
+        "default": "mdi:skip-next-circle-outline"
+      },
+      "app": {
+        "default": "mdi:apps"
+      },
+      "transport_state": {
+        "default": "mdi:play-pause",
+        "state": {
+          "playing": "mdi:play",
+          "paused": "mdi:pause",
+          "stopped": "mdi:stop",
+          "no_media": "mdi:stop-circle-outline"
+        }
+      },
+      "storage_used_percent": {
+        "default": "mdi:harddisk"
+      },
+      "storage_used": {
+        "default": "mdi:harddisk"
+      },
+      "storage_free": {
+        "default": "mdi:harddisk-plus"
+      },
+      "storage_total": {
+        "default": "mdi:harddisk"
+      },
+      "recordings_recorded": {
+        "default": "mdi:filmstrip-box-multiple"
+      },
+      "recordings_scheduled": {
+        "default": "mdi:calendar-clock"
+      },
+      "recordings_failed": {
+        "default": "mdi:alert-circle-outline"
+      },
+      "recordings_deleted": {
+        "default": "mdi:delete-outline"
+      },
+      "recording_now": {
+        "default": "mdi:record-rec"
+      },
+      "next_recording": {
+        "default": "mdi:calendar-clock"
+      },
+      "pin_tries_left": {
+        "default": "mdi:form-textbox-password"
+      },
+      "software_version": {
+        "default": "mdi:information-outline"
+      },
+      "firmware_build": {
+        "default": "mdi:chip"
+      },
+      "last_boot": {
+        "default": "mdi:restart"
+      },
+      "wake_reason": {
+        "default": "mdi:power-sleep"
+      },
+      "gateway_address": {
+        "default": "mdi:ip-network"
+      },
+      "bouquet": {
+        "default": "mdi:satellite-variant"
+      },
+      "guide_until": {
+        "default": "mdi:television-guide"
+      },
+      "software_update": {
+        "default": "mdi:update"
+      },
+      "entitlements": {
+        "default": "mdi:package-variant"
+      },
+      "smartcard": {
+        "default": "mdi:card-account-details-outline"
+      },
+      "household_id": {
+        "default": "mdi:home-account"
+      },
+      "viewing_card": {
+        "default": "mdi:card-account-details"
+      }
+    },
+    "binary_sensor": {
+      "recording": {
+        "default": "mdi:record",
+        "state": {
+          "on": "mdi:record-rec"
+        }
+      },
+      "watching_recording": {
+        "default": "mdi:television-classic",
+        "state": {
+          "on": "mdi:filmstrip"
+        }
+      },
+      "smartcard_active": {
+        "default": "mdi:card-account-details-outline"
+      },
+      "uhd_capable": {
+        "default": "mdi:ultra-high-definition"
+      },
+      "hdr_capable": {
+        "default": "mdi:hdr"
+      },
+      "pip_capable": {
+        "default": "mdi:picture-in-picture-bottom-right"
+      },
+      "streaming_capable": {
+        "default": "mdi:cast"
+      }
+    },
+    "image": {
+      "programme_artwork": {
+        "default": "mdi:image-frame"
+      },
+      "channel_logo": {
+        "default": "mdi:television-classic"
+      }
     }
   },
   "services": {

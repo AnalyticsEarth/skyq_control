@@ -50,6 +50,8 @@ if TYPE_CHECKING:
 
 _LOGGER = logging.getLogger(__name__)
 
+BOOT_TIME_TOLERANCE = timedelta(minutes=2)
+
 
 @dataclass(slots=True)
 class SkyQData:
@@ -57,6 +59,7 @@ class SkyQData:
 
     device: DeviceInfo
     power: PowerState
+    boot_time: datetime | None = None  # worked out when device info is read, not on every access
     # Playback (polled; channel changes are not pushed by the box)
     transport: TransportInfo | None = None
     media: MediaInfo | None = None
@@ -137,12 +140,15 @@ class SkyQCoordinator(DataUpdateCoordinator[SkyQData]):
                     translation_key="unreachable",
                     translation_placeholders={"host": self.host},
                 )
-            if self.data is None or self._is_due("device"):
+            fetch_device = self.data is None or self._is_due("device")
+            if fetch_device:
                 device = await self.box.get_device_info(refresh=self.data is not None)
                 self._mark("device", REFRESH_DEVICE)
             else:
                 device = self.data.device
             data = replace(self.data, device=device, power=power) if self.data else SkyQData(device=device, power=power)
+            if fetch_device:  # uptime is only fresh straight after a fetch
+                data.boot_time = self._boot_time(device, data.boot_time)
             await self._refresh_catalogue(data)
             await self._refresh_pvr(data)
             if power is PowerState.ON:
@@ -160,6 +166,16 @@ class SkyQCoordinator(DataUpdateCoordinator[SkyQData]):
             data.visible_app = self.data.visible_app
         self.update_interval = self._on_interval if power is PowerState.ON else STANDBY_SCAN_INTERVAL
         return data
+
+    @staticmethod
+    def _boot_time(device: DeviceInfo, previous: datetime | None) -> datetime | None:
+        """Boot time from uptime, kept steady: the box reports uptime in seconds and polls drift slightly."""
+        boot_time = device.boot_time
+        if boot_time is None:
+            return None
+        if previous is not None and abs(boot_time - previous) < BOOT_TIME_TOLERANCE:
+            return previous
+        return boot_time.replace(microsecond=0)
 
     async def _refresh_catalogue(self, data: SkyQData) -> None:
         if not self._is_due("catalogue"):

@@ -29,6 +29,7 @@ async def async_get_config_entry_diagnostics(hass: HomeAssistant, entry: SkyQCon
             },
             "device": data.device.raw,
             "power": data.power.value,
+            "boot_time": data.boot_time.isoformat() if data.boot_time else None,
             "playback": {
                 "transport": asdict(data.transport) if data.transport else None,
                 "media": asdict(data.media) if data.media else None,

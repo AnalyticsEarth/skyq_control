@@ -226,6 +226,154 @@
       "app": {
         "name": "App"
       }
+    },
+    "sensor": {
+      "current_channel": {
+        "name": "Channel"
+      },
+      "programme": {
+        "name": "Programme"
+      },
+      "programme_end": {
+        "name": "Programme ends"
+      },
+      "next_programme": {
+        "name": "Next programme"
+      },
+      "app": {
+        "name": "App"
+      },
+      "transport_state": {
+        "name": "Playback",
+        "state": {
+          "playing": "Playing",
+          "paused": "Paused",
+          "stopped": "Stopped",
+          "transitioning": "Changing",
+          "no_media": "Nothing playing"
+        }
+      },
+      "storage_used_percent": {
+        "name": "Disk usage"
+      },
+      "storage_used": {
+        "name": "Disk used"
+      },
+      "storage_free": {
+        "name": "Disk free"
+      },
+      "storage_total": {
+        "name": "Disk size"
+      },
+      "recordings_recorded": {
+        "name": "Recordings"
+      },
+      "recordings_scheduled": {
+        "name": "Scheduled recordings"
+      },
+      "recordings_failed": {
+        "name": "Failed recordings"
+      },
+      "recordings_deleted": {
+        "name": "Deleted recordings"
+      },
+      "recording_now": {
+        "name": "Recording now"
+      },
+      "next_recording": {
+        "name": "Next recording"
+      },
+      "pin_tries_left": {
+        "name": "PIN tries left"
+      },
+      "software_version": {
+        "name": "Software version"
+      },
+      "firmware_build": {
+        "name": "Firmware build"
+      },
+      "last_boot": {
+        "name": "Last boot"
+      },
+      "wake_reason": {
+        "name": "Wake reason"
+      },
+      "gateway_address": {
+        "name": "Gateway address"
+      },
+      "bouquet": {
+        "name": "Bouquet"
+      },
+      "guide_until": {
+        "name": "Guide available until"
+      },
+      "software_update": {
+        "name": "Software update"
+      },
+      "entitlements": {
+        "name": "Entitlements"
+      },
+      "smartcard": {
+        "name": "Smartcard"
+      },
+      "household_id": {
+        "name": "Household ID"
+      },
+      "viewing_card": {
+        "name": "Viewing card number"
+      }
+    },
+    "binary_sensor": {
+      "power": {
+        "name": "Power"
+      },
+      "recording": {
+        "name": "Recording"
+      },
+      "watching_recording": {
+        "name": "Watching a recording"
+      },
+      "gateway_connection": {
+        "name": "Gateway connection"
+      },
+      "network": {
+        "name": "Network"
+      },
+      "recorder_problem": {
+        "name": "Recorder"
+      },
+      "drm_problem": {
+        "name": "DRM"
+      },
+      "guide_problem": {
+        "name": "Guide data"
+      },
+      "software_update": {
+        "name": "Software update"
+      },
+      "smartcard_active": {
+        "name": "Smartcard active"
+      },
+      "uhd_capable": {
+        "name": "Ultra HD capable"
+      },
+      "hdr_capable": {
+        "name": "HDR capable"
+      },
+      "pip_capable": {
+        "name": "Picture-in-picture capable"
+      },
+      "streaming_capable": {
+        "name": "Streaming capable"
+      }
+    },
+    "image": {
+      "programme_artwork": {
+        "name": "Programme artwork"
+      },
+      "channel_logo": {
+        "name": "Channel logo"
+      }
     }
   },
   "services": {

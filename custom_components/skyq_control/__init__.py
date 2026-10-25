@@ -25,7 +25,15 @@ from .entity import device_identifier, device_info_for
 
 _LOGGER = logging.getLogger(__name__)
 
-PLATFORMS: list[Platform] = [Platform.BUTTON, Platform.MEDIA_PLAYER, Platform.REMOTE, Platform.SELECT]
+PLATFORMS: list[Platform] = [
+    Platform.BINARY_SENSOR,
+    Platform.BUTTON,
+    Platform.IMAGE,
+    Platform.MEDIA_PLAYER,
+    Platform.REMOTE,
+    Platform.SELECT,
+    Platform.SENSOR,
+]
 
 CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 
@@ -180,6 +188,7 @@ def async_register_device(hass: HomeAssistant, entry: SkyQConfigEntry, device: D
         )
         if mini is not None and mini.via_device_id != gateway.id:
             registry.async_update_device(mini.id, via_device_id=gateway.id)
+        other.runtime_data.async_update_listeners()  # its recorder entities now defer to the gateway
 
 
 def _gateway_device_id(hass: HomeAssistant, gateway_ip: str) -> str | None:

@@ -2,7 +2,7 @@
 
 A local-push Home Assistant integration that aims to expose **every control and every piece of metadata** a Sky Q box offers on the local network. It supports gateways and Minis. Sky Glass and Sky Stream use a different platform and are not supported.
 
-> **Status: v0.3.0.** Controls and the TV guide are in: a media player with a guide browser, a remote, a button for every remote key, channel and app pickers, and actions for automations, including guide lookups and booking recordings. Sensors and the recordings calendar come next. See [docs/PLAN.md](docs/PLAN.md).
+> **Status: v0.4.0.** Controls, the TV guide and the box's metadata are in: a media player with a guide browser, a remote, a button for every remote key, channel and app pickers, sensors, binary sensors, artwork images, and actions for automations, including guide lookups and booking recordings. Recording management and the recordings calendar come next. See [docs/PLAN.md](docs/PLAN.md).
 
 ## What you get per box
 
@@ -12,6 +12,9 @@ A local-push Home Assistant integration that aims to expose **every control and 
 | **Remote** (`remote.sky_q_…`) | Every remote key through `remote.send_command`, with repeats and delays. Works with HA's remote card. |
 | **Buttons** | One per remote key, all enabled. |
 | **Selects** | **Channel** (every channel) and **App** (installed apps such as YouTube and Netflix). Picking an option tunes the channel or opens the app. |
+| **Sensors** | What's on (channel, programme, when it ends, next programme, app, playback state). On the gateway: disk usage, used, free and size, and counts of recordings, scheduled, failed and deleted recordings, what's recording now and the next recording. Diagnostics: software version, firmware build, last boot, wake reason, bouquet, guide available until, software update, entitlements, smartcard, PIN tries left, and on Minis the gateway's address. Household ID and viewing-card number are disabled by default. |
+| **Binary sensors** | Power, recording (gateway), watching a recording, gateway connection (Minis), network, recorder, DRM and guide-data problems, software update, smartcard active, and UHD, HDR, picture-in-picture and streaming capability. |
+| **Images** | Programme artwork and the channel logo. |
 
 **Actions for automations** (target a Sky Q media player):
 - `skyq_control.send_keys`: keys such as `backup, 1, 0, 1` or `tv_guide`, with an optional delay between them.

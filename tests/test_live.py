@@ -132,6 +132,28 @@ async def test_live_household(
         buttons = [e for e in er.async_entries_for_config_entry(registry, gateway.entry_id) if e.domain == "button"]
         assert len(buttons) == len(Key) and not any(e.disabled for e in buttons)
 
+        # Sensors, binary sensors and images (Phase 4).
+        for entry in entries:
+            entities = [
+                e
+                for e in er.async_entries_for_config_entry(registry, entry.entry_id)
+                if e.domain in ("sensor", "binary_sensor", "image") and not e.disabled
+            ]
+            states = {e.entity_id: hass.states.get(e.entity_id) for e in entities}
+            unavailable = sorted(i for i, st in states.items() if st is None or st.state == "unavailable")
+            print(f"\n{entry.title}: {len(entities)} sensor/binary/image entities, unavailable: {unavailable}")
+            for entity_id, st in sorted(states.items()):
+                if st is not None and not entity_id.startswith("image."):
+                    print(f"  {entity_id.split('.', 1)[1]:55} {st.state}")
+            # Images have nothing to show in standby; everything else should have a value.
+            assert all(i.startswith("image.") for i in unavailable), unavailable
+        gateway_states = {e.entity_id for e in er.async_entries_for_config_entry(registry, gateway.entry_id)}
+        assert any(i.endswith("_disk_usage") for i in gateway_states)
+        for mini in minis:
+            assert not any(
+                e.entity_id.endswith("_disk_usage") for e in er.async_entries_for_config_entry(registry, mini.entry_id)
+            )
+
         # The guide: the shared client, the media browser and get_guide.
         player_id = next(
             e.entity_id
