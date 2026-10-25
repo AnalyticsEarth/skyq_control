@@ -255,6 +255,14 @@
       "channel_logo": {
         "default": "mdi:television-classic"
       }
+    },
+    "calendar": {
+      "scheduled_recordings": {
+        "default": "mdi:calendar-clock"
+      },
+      "recordings": {
+        "default": "mdi:filmstrip-box-multiple"
+      }
     }
   },
   "services": {
@@ -272,6 +280,30 @@
     },
     "record": {
       "service": "mdi:record-rec"
+    },
+    "record_now": {
+      "service": "mdi:record-rec"
+    },
+    "delete_recording": {
+      "service": "mdi:delete"
+    },
+    "restore_recording": {
+      "service": "mdi:delete-restore"
+    },
+    "stop_recording": {
+      "service": "mdi:stop-circle"
+    },
+    "update_recording": {
+      "service": "mdi:pencil"
+    },
+    "get_recordings": {
+      "service": "mdi:filmstrip-box-multiple"
+    },
+    "get_channels": {
+      "service": "mdi:format-list-numbered"
+    },
+    "get_apps": {
+      "service": "mdi:apps"
     }
   }
 }

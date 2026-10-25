@@ -62,6 +62,15 @@
       "options": {
         "manual": "Enter an IP address"
       }
+    },
+    "recording_status": {
+      "options": {
+        "recorded": "Recorded",
+        "scheduled": "Scheduled",
+        "recording": "Recording now",
+        "failed": "Failed",
+        "deleted": "Deleted"
+      }
     }
   },
   "exceptions": {
@@ -100,6 +109,24 @@
     },
     "unknown_media": {
       "message": "{media_id} isn't something this box can browse."
+    },
+    "unknown_recording": {
+      "message": "There's no recording with ID {recording_id}. Get IDs from Get recordings."
+    },
+    "not_recording": {
+      "message": "{title} isn't recording right now."
+    },
+    "nothing_to_update": {
+      "message": "Choose at least one thing to change: keep, locked, series link or resume position."
+    },
+    "resume_backwards": {
+      "message": "Sky Q can only move the resume position forward ({position} s is before the current {current} s)."
+    },
+    "no_programme": {
+      "message": "This box isn't showing a programme from the TV guide, so there's nothing to record."
+    },
+    "no_recordings": {
+      "message": "The recordings list hasn't been fetched yet. Try again in a moment."
     }
   },
   "entity": {
@@ -374,6 +401,14 @@
       "channel_logo": {
         "name": "Channel logo"
       }
+    },
+    "calendar": {
+      "scheduled_recordings": {
+        "name": "Scheduled recordings"
+      },
+      "recordings": {
+        "name": "Recordings"
+      }
     }
   },
   "services": {
@@ -446,6 +481,102 @@
           "description": "Record every episode of the series."
         }
       }
+    },
+    "record_now": {
+      "name": "Record what's on",
+      "description": "Records the programme on now on this box's channel.",
+      "fields": {
+        "series": {
+          "name": "Series link",
+          "description": "Record every episode of the series."
+        }
+      }
+    },
+    "delete_recording": {
+      "name": "Delete recording",
+      "description": "Deletes a recording, or cancels a scheduled one. Deleted recordings go to the box's trash and can be restored, unless deleted permanently.",
+      "fields": {
+        "recording_id": {
+          "name": "Recording ID",
+          "description": "The recording's ID (starts with P), from Get recordings or a recordings calendar event."
+        },
+        "permanent": {
+          "name": "Permanently",
+          "description": "Erase it for good instead of moving it to the trash. This can't be undone."
+        }
+      }
+    },
+    "restore_recording": {
+      "name": "Restore recording",
+      "description": "Brings a deleted recording back from the trash.",
+      "fields": {
+        "recording_id": {
+          "name": "Recording ID",
+          "description": "The recording's ID (starts with P), from Get recordings or a recordings calendar event."
+        }
+      }
+    },
+    "stop_recording": {
+      "name": "Stop recording",
+      "description": "Stops a recording in progress and keeps what's been recorded so far.",
+      "fields": {
+        "recording_id": {
+          "name": "Recording ID",
+          "description": "The recording's ID (starts with P), from Get recordings or a recordings calendar event."
+        }
+      }
+    },
+    "update_recording": {
+      "name": "Update recording",
+      "description": "Changes a recording's settings. Only the fields you set are changed.",
+      "fields": {
+        "recording_id": {
+          "name": "Recording ID",
+          "description": "The recording's ID (starts with P), from Get recordings or a recordings calendar event."
+        },
+        "keep": {
+          "name": "Keep",
+          "description": "Protect it from automatic deletion when the disk is full."
+        },
+        "locked": {
+          "name": "Locked",
+          "description": "Require the PIN to play it."
+        },
+        "series_link": {
+          "name": "Series link",
+          "description": "Record future episodes of the series."
+        },
+        "resume_position": {
+          "name": "Resume position",
+          "description": "Where playback resumes, in seconds from the start. Sky Q can only move it forward."
+        }
+      }
+    },
+    "get_recordings": {
+      "name": "Get recordings",
+      "description": "Returns the household's recordings: scheduled ones soonest first, then the rest newest first.",
+      "fields": {
+        "status": {
+          "name": "Status",
+          "description": "Only these kinds. Leave empty for everything except deleted recordings."
+        },
+        "search": {
+          "name": "Search",
+          "description": "Only recordings whose title contains this text."
+        },
+        "limit": {
+          "name": "Limit",
+          "description": "The most recordings to return."
+        }
+      }
+    },
+    "get_channels": {
+      "name": "Get channels",
+      "description": "Returns every channel on the box, with numbers, service IDs, genres and favourite positions."
+    },
+    "get_apps": {
+      "name": "Get apps",
+      "description": "Returns the apps installed on the box, with the IDs Open app accepts."
     }
   }
 }

@@ -84,3 +84,123 @@ record:
       default: false
       selector:
         boolean:
+
+record_now:
+  target:
+    entity:
+      integration: skyq_control
+      domain: media_player
+  fields:
+    series:
+      default: false
+      selector:
+        boolean:
+
+delete_recording:
+  target:
+    entity:
+      integration: skyq_control
+      domain: media_player
+  fields:
+    recording_id:
+      required: true
+      example: "P2902aeb9"
+      selector:
+        text:
+    permanent:
+      default: false
+      selector:
+        boolean:
+
+restore_recording:
+  target:
+    entity:
+      integration: skyq_control
+      domain: media_player
+  fields:
+    recording_id:
+      required: true
+      example: "P2902aeb9"
+      selector:
+        text:
+
+stop_recording:
+  target:
+    entity:
+      integration: skyq_control
+      domain: media_player
+  fields:
+    recording_id:
+      required: true
+      example: "P2902aeb9"
+      selector:
+        text:
+
+update_recording:
+  target:
+    entity:
+      integration: skyq_control
+      domain: media_player
+  fields:
+    recording_id:
+      required: true
+      example: "P2902aeb9"
+      selector:
+        text:
+    keep:
+      selector:
+        boolean:
+    locked:
+      selector:
+        boolean:
+    series_link:
+      selector:
+        boolean:
+    resume_position:
+      selector:
+        number:
+          min: 0
+          max: 86400
+          unit_of_measurement: s
+          mode: box
+
+get_recordings:
+  target:
+    entity:
+      integration: skyq_control
+      domain: media_player
+  fields:
+    status:
+      selector:
+        select:
+          multiple: true
+          translation_key: recording_status
+          options:
+            - recorded
+            - scheduled
+            - recording
+            - failed
+            - deleted
+    search:
+      example: "Match of the Day"
+      selector:
+        text:
+    limit:
+      default: 100
+      selector:
+        number:
+          min: 1
+          max: 2000
+          mode: box
+
+get_channels:
+  target:
+    entity:
+      integration: skyq_control
+      domain: media_player
+
+get_apps:
+  target:
+    entity:
+      integration: skyq_control
+      domain: media_player

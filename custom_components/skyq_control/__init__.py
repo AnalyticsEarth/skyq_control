@@ -4,30 +4,29 @@ from __future__ import annotations
 
 import logging
 
-import voluptuous as vol
-from homeassistant.components.media_player import DOMAIN as MEDIA_PLAYER_DOMAIN
 from homeassistant.config_entries import ConfigEntry, ConfigEntryState
 from homeassistant.const import CONF_HOST, Platform
-from homeassistant.core import HomeAssistant, SupportsResponse, callback
+from homeassistant.core import HomeAssistant, callback
 from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers import config_validation as cv
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers import entity_registry as er
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
-from homeassistant.helpers.service import async_register_platform_entity_service
 from homeassistant.helpers.typing import ConfigType
 from homeassistant.util.hass_dict import HassKey
 
 from .aioskyq import DeviceInfo, EpgClient, SkyQBox
-from .const import CONF_KEY_GAP, DEFAULT_KEY_GAP, DOMAIN, GUIDE_MAX_HOURS
+from .const import CONF_KEY_GAP, DEFAULT_KEY_GAP, DOMAIN
 from .coordinator import SkyQCoordinator
 from .entity import device_identifier, device_info_for
+from .services import async_setup_services
 
 _LOGGER = logging.getLogger(__name__)
 
 PLATFORMS: list[Platform] = [
     Platform.BINARY_SENSOR,
     Platform.BUTTON,
+    Platform.CALENDAR,
     Platform.IMAGE,
     Platform.MEDIA_PLAYER,
     Platform.REMOTE,
@@ -41,65 +40,12 @@ CONFIG_SCHEMA = cv.config_entry_only_config_schema(DOMAIN)
 GUIDE_CLIENTS: HassKey[dict[str, EpgClient]] = HassKey(f"{DOMAIN}_guide")
 
 
-def _comma_list(value: object) -> list[str]:
-    """Accept a list or comma-separated text ("backup, 1, 0, 1")."""
-    return [key.strip() for item in cv.ensure_list(value) for key in str(item).split(",") if key.strip()]
-
-
 type SkyQConfigEntry = ConfigEntry[SkyQCoordinator]
 
 
 async def async_setup(hass: HomeAssistant, config: ConfigType) -> bool:
     """Register the integration's actions (they target Sky Q media players)."""
-    async_register_platform_entity_service(
-        hass,
-        DOMAIN,
-        "send_keys",
-        entity_domain=MEDIA_PLAYER_DOMAIN,
-        schema={
-            vol.Required("keys"): vol.All(_comma_list, vol.Length(min=1)),
-            vol.Optional("delay"): vol.All(vol.Coerce(float), vol.Range(min=0, max=5)),
-        },
-        func="async_send_keys",
-    )
-    async_register_platform_entity_service(
-        hass,
-        DOMAIN,
-        "change_channel",
-        entity_domain=MEDIA_PLAYER_DOMAIN,
-        schema={vol.Required("channel"): cv.string},
-        func="async_change_channel",
-    )
-    async_register_platform_entity_service(
-        hass,
-        DOMAIN,
-        "launch_app",
-        entity_domain=MEDIA_PLAYER_DOMAIN,
-        schema={vol.Required("app"): cv.string},
-        func="async_launch_app",
-    )
-    async_register_platform_entity_service(
-        hass,
-        DOMAIN,
-        "get_guide",
-        entity_domain=MEDIA_PLAYER_DOMAIN,
-        schema={
-            vol.Optional("channels"): vol.All(_comma_list, [cv.string]),
-            vol.Optional("start"): cv.datetime,
-            vol.Optional("hours", default=6): vol.All(vol.Coerce(float), vol.Range(min=0.5, max=GUIDE_MAX_HOURS)),
-            vol.Optional("search"): cv.string,
-        },
-        func="async_get_guide",
-        supports_response=SupportsResponse.ONLY,
-    )
-    async_register_platform_entity_service(
-        hass,
-        DOMAIN,
-        "record",
-        entity_domain=MEDIA_PLAYER_DOMAIN,
-        schema={vol.Required("event_id"): cv.string, vol.Optional("series", default=False): cv.boolean},
-        func="async_record",
-    )
+    async_setup_services(hass)
     return True
 
 

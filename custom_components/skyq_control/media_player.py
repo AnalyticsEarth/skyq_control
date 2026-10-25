@@ -25,7 +25,7 @@ from .aioskyq.remote import resolve_key
 from .browse_media import browse
 from .const import DOMAIN
 from .coordinator import SkyQCoordinator
-from .entity import SkyQEntity, channel_label, source_channels, user_apps, visible_app
+from .entity import SkyQEntity, channel_label, household_recordings, source_channels, user_apps, visible_app
 
 PARALLEL_UPDATES = 1  # one command at a time per box; the box drops overlapping key presses
 
@@ -228,7 +228,13 @@ class SkyQMediaPlayer(SkyQEntity, MediaPlayerEntity):
     async def async_browse_media(
         self, media_content_type: MediaType | str | None = None, media_content_id: str | None = None
     ) -> BrowseMedia:
-        return await browse(self.data, self.coordinator.box.epg, media_content_type, media_content_id)
+        return await browse(
+            self.data,
+            self.coordinator.box.epg,
+            media_content_type,
+            media_content_id,
+            household_recordings(self.coordinator),
+        )
 
     async def async_play_media(self, media_type: MediaType | str, media_id: str, **kwargs: Any) -> None:
         """channel: a number ("101") or "sid:3008"; app: an app id or title; keys: "up,up,select"."""

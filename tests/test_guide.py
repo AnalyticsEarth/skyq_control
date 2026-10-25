@@ -52,14 +52,14 @@ async def test_browse_root(hass: HomeAssistant, hass_ws_client: WebSocketGenerat
     await setup_entry(hass, make_entry())
     root = await browse(hass_ws_client, hass)
     titles = [child["title"] for child in root["children"]]
-    assert titles[0] == "Favourites" and titles[1] == "Entertainment" and titles[-1] == "Apps"
+    assert titles[:3] == ["Favourites", "Recordings", "Entertainment"] and titles[-1] == "Apps"
     assert "Movies" in titles and "Sports" in titles and "Radio" in titles
 
 
 async def test_browse_mini_has_no_favourites_folder(hass: HomeAssistant, hass_ws_client: WebSocketGenerator) -> None:
     await setup_entry(hass, make_entry(MINI_HOST, MINI_SERIAL))
     root = await browse(hass_ws_client, hass, player=MINI_PLAYER)
-    assert root["children"][0]["title"] == "Entertainment"
+    assert [c["title"] for c in root["children"]][:2] == ["Recordings", "Entertainment"]  # no favourites
 
 
 async def test_browse_channels_show_whats_on(hass: HomeAssistant, hass_ws_client: WebSocketGenerator) -> None:

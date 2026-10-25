@@ -216,6 +216,39 @@ async def test_live_household(
         assert found
         from custom_components.skyq_control import GUIDE_CLIENTS
 
+        # Recordings (Phase 5), read-only: lookups from the gateway and a Mini, calendars, browser.
+        for target in [player_id, *(f"media_player.sky_q_mini_{m.data[CONF_HOST].replace('.', '_')}" for m in minis)]:
+            response = await hass.services.async_call(
+                DOMAIN, "get_recordings", {"entity_id": target, "limit": 3}, blocking=True, return_response=True
+            )
+            result = response[target]
+            print(
+                f"get_recordings on {target}: total {result['total']}, statuses "
+                f"{sorted({r['status'] for r in result['recordings']})}"
+            )
+            assert result["total"] > 0
+        channels = (
+            await hass.services.async_call(
+                DOMAIN, "get_channels", {"entity_id": player_id}, blocking=True, return_response=True
+            )
+        )[player_id]["channels"]
+        assert len(channels) > 300 and any(c["favourite"] for c in channels)
+        for calendar_id in ("calendar.sky_q_gateway_scheduled_recordings", "calendar.sky_q_gateway_recordings"):
+            calendar = hass.states.get(calendar_id)
+            assert calendar is not None and calendar.state in ("on", "off"), calendar_id
+            print(f"{calendar_id}: {calendar.state}")
+        await client.send_json_auto_id(
+            {
+                "type": "media_player/browse_media",
+                "entity_id": player_id,
+                "media_content_id": "recordings",
+                "media_content_type": "recordings",
+            }
+        )
+        response = await client.receive_json()
+        assert response["success"], response
+        print(f"browse recordings: {len(response['result']['children'])} items")
+
         assert len(hass.data[GUIDE_CLIENTS]) == 1  # every box shares one guide cache
 
         diagnostics = await get_diagnostics_for_config_entry(hass, hass_client, gateway)

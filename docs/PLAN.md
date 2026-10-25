@@ -145,6 +145,24 @@ The boxes probed were one gateway (ES140, `192.168.1.50`) and three Minis (EM150
 
 ## 4. Architecture
 
+**v0.5.0 (2026-10-25): the rest of Phase 5 (recordings).**
+- **Actions** (target any Sky Q media player; a Mini passes PVR calls to its gateway):
+  - `record_now`;
+  - `delete_recording`: to the trash, or `permanent: true` to erase; on a scheduled item it cancels the booking;
+  - `restore_recording` and `stop_recording`;
+  - `update_recording`: keep, locked, series link and resume position (forward only, checked before calling the box).
+- **Lookups** (response only): `get_recordings` (status filter including deleted, title search, limit; bookings soonest first, then newest first), `get_channels` and `get_apps`. Registration moved to `services.py`.
+- **Calendars** on the box holding the recordings: *Scheduled recordings* (scheduled plus recording now) and *Recordings* (recorded and part-recorded, not deleted). The UID is the recording ID, and the location is the channel.
+- **Media browser:** a Recordings folder, newest first. It's listed but not playable, because Sky Q locks remote playback (SOAP 705). Minis browse the gateway's list through `SkyQCoordinator.household_pvr`.
+- **Not exposed on purpose:** erasing every recording at once (`DELETE /as/pvr`), and pay-per-view booking (spends money). The library still has both.
+- **Live:** read-only checks passed on all four boxes (454 recordings in the household, 435 recorded).
+- **Live write test** (`tests/test_live_write.py`, opt-in with `SKYQ_WRITE=1`) ran on the gateway through HA in 12 s:
+  - booked a BBC Parliament programme from `get_guide` with `record`, and it appeared as scheduled;
+  - kept and locked it, then unkept and unlocked it; each change shows up on the box after a few seconds;
+  - deleted it, which cancelled the booking at once without leaving it in the trash;
+  - afterwards, the gateway and a Mini both listed the same 454 items as before.
+  - This meets Phase 5's "booking, keeping, locking and deleting work end to end".
+
 **v0.4.0 (2026-10-25): Phase 4 metadata.**
 - **Sensors (primary):**
   - what's on: channel, programme (or the recording being played), when the programme ends, next programme, app on screen, playback state;
@@ -278,7 +296,7 @@ Ship a ready-made dashboard (YAML in `docs/dashboard.yaml`) that has a full remo
 | 2. Integration skeleton | Config flow (SSDP + manual + options), coordinator, device registry (gateway/Mini), diagnostics with redaction, translations | Box discovered and added; diagnostics download works |
 | 3. Controls | `media_player`, `remote`, `button`, `select`, `send_keys`/`change_channel` actions | Every key can be pressed from the UI |
 | 4. Metadata ✅ v0.4.0 | All sensors and binary sensors from §5, plus `image` | Every field in §3 maps to an entity or attribute |
-| 5. PVR & EPG | PVR actions, calendar, response actions, browse media, now/next | Booking, keeping, locking and deleting work end to end |
+| 5. PVR & EPG ✅ v0.5.0 | PVR actions, calendar, response actions, browse media, now/next | Booking, keeping, locking and deleting work end to end |
 | 6. Events & polish | Event entities, device triggers, dashboard YAML, HACS packaging (`hacs.json`, hassfest + HACS GitHub Actions), README, quality-scale checklist | Passes hassfest and HACS validation; tagged release |
 
 ## 7. Risks and decisions

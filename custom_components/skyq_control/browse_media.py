@@ -5,12 +5,12 @@ from __future__ import annotations
 import asyncio
 import logging
 from collections.abc import Iterable
-from datetime import datetime, timedelta
+from datetime import UTC, datetime, timedelta
 
 from homeassistant.components.media_player import BrowseError, BrowseMedia, MediaClass, MediaType
 from homeassistant.util import dt as dt_util
 
-from .aioskyq import Channel, EpgClient, EpgEvent, SkyQError
+from .aioskyq import Channel, EpgClient, EpgEvent, Recording, RecordingStatus, SkyQError
 from .const import DOMAIN, GUIDE_BROWSE_HOURS
 from .coordinator import SkyQData
 from .entity import channel_label, favourite_channels, source_channels, user_apps
@@ -18,10 +18,13 @@ from .entity import channel_label, favourite_channels, source_channels, user_app
 _LOGGER = logging.getLogger(__name__)
 
 FAVOURITES = "favourites"
+RECORDINGS = "recordings"
 APPS = "apps"
 GENRE_PREFIX = "genre:"
 SID_PREFIX = "sid:"
 MEDIA_TYPE_PROGRAMME = "programme"
+MEDIA_TYPE_RECORDING = "recording"
+RECORDED = (RecordingStatus.RECORDED, RecordingStatus.PART_RECORDED)
 # Folder listings show what's on now when the guide answers quickly; otherwise they show channels only.
 NOW_ON_TIMEOUT = 10.0
 
@@ -34,9 +37,18 @@ def genre_folders(data: SkyQData) -> dict[int, list[Channel]]:
     return folders
 
 
-async def browse(data: SkyQData, guide: EpgClient, content_type: str | None, content_id: str | None) -> BrowseMedia:
+async def browse(
+    data: SkyQData,
+    guide: EpgClient,
+    content_type: str | None,
+    content_id: str | None,
+    household: list[Recording] | None = None,
+) -> BrowseMedia:
+    """`household` is every recording in the house (they're on the gateway), when known."""
     if not content_id:
-        return _root(data)
+        return _root(data, household)
+    if content_id == RECORDINGS and household is not None:
+        return _recordings(household)
     if content_id == FAVOURITES:
         return await _channel_folder(guide, FAVOURITES, "Favourites", favourite_channels(data))
     if content_id == APPS:
@@ -55,10 +67,12 @@ def _number_after(content_id: str, prefix: str) -> int | None:
     return int(rest) if rest != content_id and rest.isdigit() else None
 
 
-def _root(data: SkyQData) -> BrowseMedia:
+def _root(data: SkyQData, household: list[Recording] | None) -> BrowseMedia:
     children = []
     if favourite_channels(data):
         children.append(_folder(FAVOURITES, "Favourites"))
+    if household:
+        children.append(_folder(RECORDINGS, "Recordings"))
     children.extend(_folder(f"{GENRE_PREFIX}{genre}", _genre_title(data, genre)) for genre in genre_folders(data))
     if user_apps(data):
         children.append(_folder(APPS, "Apps"))
@@ -94,6 +108,34 @@ def _apps(data: SkyQData) -> BrowseMedia:
             for app in user_apps(data)
         ],
         children_media_class=MediaClass.APP,
+    )
+
+
+def _recordings(household: list[Recording]) -> BrowseMedia:
+    """Recordings made, newest first. Sky Q locks remote playback, so they can be listed but not played."""
+    made = [r for r in household if r.status in RECORDED and not r.is_deleted]
+    made.sort(key=lambda r: r.start or datetime.min.replace(tzinfo=UTC), reverse=True)
+    now = dt_util.utcnow()
+    return BrowseMedia(
+        media_class=MediaClass.DIRECTORY,
+        media_content_id=RECORDINGS,
+        media_content_type=RECORDINGS,
+        title="Recordings",
+        can_play=False,
+        can_expand=True,
+        children=[
+            BrowseMedia(
+                media_class=MediaClass.EPISODE if r.episode else MediaClass.VIDEO,
+                media_content_id=f"recording:{r.pvrid}",
+                media_content_type=MEDIA_TYPE_RECORDING,
+                title=f"{r.title or r.pvrid} · {format_start(r.start, now)}" if r.start else (r.title or r.pvrid),
+                can_play=False,
+                can_expand=False,
+                thumbnail=r.image_url,
+            )
+            for r in made
+        ],
+        children_media_class=MediaClass.VIDEO,
     )
 
 

@@ -85,6 +85,14 @@ def recordings(data: SkyQData, *statuses: RecordingStatus) -> list[Recording]:
     return [r for r in items if not r.is_deleted and (not statuses or r.status in statuses)]
 
 
+def household_recordings(coordinator: SkyQCoordinator) -> list[Recording] | None:
+    """Every recording in the house (the gateway holds them), or None if they haven't been fetched."""
+    pvr = coordinator.household_pvr
+    if pvr is None or pvr.data.recordings is None:
+        return None
+    return list(pvr.data.recordings.recordings)
+
+
 def user_apps(data: SkyQData) -> list[App]:
     apps = [
         app
