@@ -145,6 +145,12 @@ The boxes probed were one gateway (ES140, `192.168.1.50`) and three Minis (EM150
 
 ## 4. Architecture
 
+**Phase 3 status:** done (2026-10-25, v0.2.0).
+- **Entities:** a media player, a remote, a button per key (23 enabled by default) and channel/app selects.
+- **Actions:** `send_keys`, `change_channel` and `launch_app`, registered once in `async_setup`.
+- **Now playing:** live TV shows the programme with a progress bar anchored to its start, so there's no state write per poll. Recordings show position. Apps show `app_name`. Standby reports `off`, because `MediaPlayerState.STANDBY` is deprecated in 2026.10.
+- **Tests:** 51 mocked, plus a live check on all four boxes.
+
 **Phase 2 status:** done (2026-10-25). `custom_components/skyq_control` covers:
 - **Config flow:** SSDP discovery with confirm, a user scan or manual IP entry, reconfigure, and options (key spacing, poll interval).
 - **Per-box coordinator:** 5 s poll when on and 30 s in standby, push merging, and recordings fetched once per household.

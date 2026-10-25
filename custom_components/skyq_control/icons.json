@@ -1,0 +1,139 @@
+{
+  "entity": {
+    "button": {
+      "key_power": {
+        "default": "mdi:power"
+      },
+      "key_select": {
+        "default": "mdi:checkbox-blank-circle-outline"
+      },
+      "key_backup": {
+        "default": "mdi:arrow-u-left-top"
+      },
+      "key_channel_up": {
+        "default": "mdi:arrow-up-bold-box"
+      },
+      "key_channel_down": {
+        "default": "mdi:arrow-down-bold-box"
+      },
+      "key_interactive": {
+        "default": "mdi:gesture-tap"
+      },
+      "key_help": {
+        "default": "mdi:help-circle-outline"
+      },
+      "key_services": {
+        "default": "mdi:cog-outline"
+      },
+      "key_tv_guide": {
+        "default": "mdi:television-guide"
+      },
+      "key_red_button": {
+        "default": "mdi:circle-double"
+      },
+      "key_i": {
+        "default": "mdi:information-outline"
+      },
+      "key_text": {
+        "default": "mdi:text-box-outline"
+      },
+      "key_up": {
+        "default": "mdi:chevron-up"
+      },
+      "key_down": {
+        "default": "mdi:chevron-down"
+      },
+      "key_left": {
+        "default": "mdi:chevron-left"
+      },
+      "key_right": {
+        "default": "mdi:chevron-right"
+      },
+      "key_red": {
+        "default": "mdi:circle"
+      },
+      "key_green": {
+        "default": "mdi:circle"
+      },
+      "key_yellow": {
+        "default": "mdi:circle"
+      },
+      "key_blue": {
+        "default": "mdi:circle"
+      },
+      "key_digit_0": {
+        "default": "mdi:numeric-0"
+      },
+      "key_digit_1": {
+        "default": "mdi:numeric-1"
+      },
+      "key_digit_2": {
+        "default": "mdi:numeric-2"
+      },
+      "key_digit_3": {
+        "default": "mdi:numeric-3"
+      },
+      "key_digit_4": {
+        "default": "mdi:numeric-4"
+      },
+      "key_digit_5": {
+        "default": "mdi:numeric-5"
+      },
+      "key_digit_6": {
+        "default": "mdi:numeric-6"
+      },
+      "key_digit_7": {
+        "default": "mdi:numeric-7"
+      },
+      "key_digit_8": {
+        "default": "mdi:numeric-8"
+      },
+      "key_digit_9": {
+        "default": "mdi:numeric-9"
+      },
+      "key_play": {
+        "default": "mdi:play"
+      },
+      "key_pause": {
+        "default": "mdi:pause"
+      },
+      "key_stop": {
+        "default": "mdi:stop"
+      },
+      "key_record": {
+        "default": "mdi:record-rec"
+      },
+      "key_fast_forward": {
+        "default": "mdi:fast-forward"
+      },
+      "key_rewind": {
+        "default": "mdi:rewind"
+      },
+      "key_box_office": {
+        "default": "mdi:ticket"
+      },
+      "key_sky": {
+        "default": "mdi:home"
+      }
+    },
+    "select": {
+      "channel": {
+        "default": "mdi:television-classic"
+      },
+      "app": {
+        "default": "mdi:apps"
+      }
+    }
+  },
+  "services": {
+    "send_keys": {
+      "service": "mdi:remote"
+    },
+    "change_channel": {
+      "service": "mdi:television-classic"
+    },
+    "launch_app": {
+      "service": "mdi:apps"
+    }
+  }
+}

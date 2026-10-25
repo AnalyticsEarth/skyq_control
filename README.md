@@ -2,18 +2,29 @@
 
 A local-push Home Assistant integration that aims to expose **every control and every piece of metadata** a Sky Q box offers on the local network. It supports gateways and Minis. Sky Glass and Sky Stream use a different platform and are not supported.
 
-> **Status: Phase 2 (skeleton).** Discovery, setup, the per-box data coordinator, devices and diagnostics work against real boxes. Entities (media player, remote, buttons, sensors, the recordings calendar) arrive in Phases 3 to 5. See [docs/PLAN.md](docs/PLAN.md).
+> **Status: v0.2.0.** Controls are in: a media player, a remote, a button for every remote key, channel and app pickers, and actions for automations. Sensors, the recordings calendar and the media browser come next. See [docs/PLAN.md](docs/PLAN.md).
 
-## What works now
+## What you get per box
 
-- **Discovery:** boxes are found automatically over SSDP, or you can pick from a network scan or type an IP address.
-- **One device per box:** each box shows its model (ES240 gateway, EM150 Mini), firmware, serial number and MAC address. Minis are linked to their gateway.
-- **Live state:** playback is polled every 5 s while the box is on (30 s in standby), because the box doesn't push channel changes. System status, app changes, recording changes and channel-list changes arrive by push over the box's websockets.
-- **Recordings** are fetched once per household, by the gateway.
-- **Programme guide** comes from Sky's public metadata service, because the box itself has no guide.
-- **Options:** the delay between key presses and the playback poll interval.
-- **Reconfigure** an entry when a box gets a new IP address.
-- **Diagnostics** download with serials, card numbers and household IDs redacted.
+| Entity | What it does |
+|---|---|
+| **Media player** (`media_player.sky_q_…`) | On/off, play/pause/stop, channel up/down (next/previous), and a channel picker (the box's favourites, or channels 101–199 if it has none). Shows the channel, the current programme with artwork and a live progress bar, the next programme, a recording's title and position, or the app on screen. |
+| **Remote** (`remote.sky_q_…`) | Every remote key through `remote.send_command`, with repeats and delays. Works with HA's remote card. |
+| **Buttons** | One per remote key. Navigation, transport, colour keys, the red button, Sky, TV guide and info are enabled. Digits, Box Office, Help, Services, Interactive and Text are created disabled; enable them if you want them. |
+| **Selects** | **Channel** (favourites) and **App** (installed apps such as YouTube and Netflix). Picking an option tunes the channel or opens the app. |
+
+**Actions for automations** (target a Sky Q media player):
+- `skyq_control.send_keys`: keys such as `backup, 1, 0, 1` or `tv_guide`, with an optional delay between them.
+- `skyq_control.change_channel`: a channel number such as `101`, or `sid:3008`.
+- `skyq_control.launch_app`: an app name or ID such as `YouTube`.
+
+`media_player.play_media` also accepts `channel`, `app` and `keys` as media types.
+
+Under the hood:
+- Playback is polled every 5 s while a box is on (30 s in standby), because the box doesn't announce channel changes. App, standby, recording and channel-list changes arrive by push.
+- Commands go over the box's remote-control port, because Sky Q blocks the UPnP transport controls.
+- The guide comes from Sky's public metadata service.
+- Diagnostics redact serials, card numbers and household IDs.
 
 ## Install with HACS
 

@@ -117,6 +117,18 @@ class FakeBox:
         box.get_position_info = AsyncMock(return_value=PositionInfo.from_api({"RelTime": "0:10:00"}))
         box.epg.now_and_next = AsyncMock(side_effect=lambda *_: (programme(0), programme(30, "News")))
         box.close = AsyncMock()
+        for command in (
+            "press",
+            "change_channel",
+            "tune",
+            "launch_app",
+            "turn_on",
+            "turn_off",
+            "play",
+            "pause",
+            "stop",
+        ):
+            setattr(box, command, AsyncMock())
         box.streams_connected = {"system/status": True}
         box.soap.devices = [UpnpDevice("urn:schemas-nds-com:device:GatewaySkyControl:2", "000000000", "Q370", 1, ())]
         for name in ("system_status", "apps", "pvr", "channel_list"):

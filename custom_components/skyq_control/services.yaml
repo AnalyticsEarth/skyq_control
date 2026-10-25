@@ -1,0 +1,43 @@
+send_keys:
+  target:
+    entity:
+      integration: skyq_control
+      domain: media_player
+  fields:
+    keys:
+      required: true
+      example: "backup, 1, 0, 1"
+      selector:
+        text:
+          multiple: true
+    delay:
+      selector:
+        number:
+          min: 0
+          max: 5
+          step: 0.1
+          unit_of_measurement: s
+
+change_channel:
+  target:
+    entity:
+      integration: skyq_control
+      domain: media_player
+  fields:
+    channel:
+      required: true
+      example: "101"
+      selector:
+        text:
+
+launch_app:
+  target:
+    entity:
+      integration: skyq_control
+      domain: media_player
+  fields:
+    app:
+      required: true
+      example: "YouTube"
+      selector:
+        text:

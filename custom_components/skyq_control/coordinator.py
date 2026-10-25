@@ -65,6 +65,7 @@ class SkyQData:
     next_programme: EpgEvent | None = None
     recording: Recording | None = None  # the recording being played, if any
     position: PositionInfo | None = None
+    position_at: datetime | None = None  # when `position` was read
     # Pushed
     visible_app: str | None = None
     system_status: SystemStatus | None = None
@@ -214,8 +215,9 @@ class SkyQCoordinator(DataUpdateCoordinator[SkyQData]):
                     data.recording = None
             try:
                 data.position = await self.box.get_position_info()
+                data.position_at = datetime.now(UTC)
             except SkyQError:
-                data.position = None
+                data.position = data.position_at = None
         else:  # an app, or nothing
             data.channel = data.programme = data.next_programme = data.recording = data.position = None
 

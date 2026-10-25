@@ -104,6 +104,24 @@ async def test_live_household(
             ):
                 await asyncio.sleep(0.2)
 
+        from homeassistant.helpers import entity_registry as er
+
+        registry = er.async_get(hass)
+        for entry in entries:
+            entities = {e.domain: e for e in er.async_entries_for_config_entry(registry, entry.entry_id)}
+            player = hass.states.get(entities["media_player"].entity_id)
+            assert player is not None and player.state not in ("unavailable", "unknown"), entry.title
+            assert hass.states.get(entities["remote"].entity_id).state in ("on", "off")
+            options = hass.states.get(
+                f"{entities['media_player'].entity_id.replace('media_player.', 'select.')}_channel"
+            )
+            assert options is not None and options.attributes["options"]
+            print(
+                f"{entry.title:12} {player.entity_id}: {player.state}"
+                f" | {player.attributes.get('media_channel', '-')} | {player.attributes.get('media_title', '-')}"
+                f" | app={player.attributes.get('app_name', '-')} | sources={len(player.attributes.get('source_list', []))}"
+            )
+
         diagnostics = await get_diagnostics_for_config_entry(hass, hass_client, gateway)
         assert diagnostics["device"]["serialNumber"] == "**REDACTED**"
         assert diagnostics["system_status"]["smartcard"]["viewingCardNumber"] == "**REDACTED**"

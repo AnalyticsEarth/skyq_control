@@ -70,6 +70,186 @@
     },
     "wrong_device": {
       "message": "The box at {host} is a different Sky Q box than this entry was set up for. Reconfigure the entry with the right address."
+    },
+    "command_failed": {
+      "message": "The Sky Q box didn't accept the command: {error}"
+    },
+    "unknown_key": {
+      "message": "Unknown remote key. {error}"
+    },
+    "unknown_source": {
+      "message": "{source} isn't one of this box's channels."
+    },
+    "unknown_app": {
+      "message": "{app} isn't installed on this box."
+    },
+    "invalid_channel": {
+      "message": "{channel} isn't a channel number. Use digits such as 101, or sid:3008."
+    },
+    "unsupported_media_type": {
+      "message": "Can't play media of type {media_type}. Use channel, app or keys."
+    }
+  },
+  "entity": {
+    "button": {
+      "key_power": {
+        "name": "Power"
+      },
+      "key_select": {
+        "name": "Select"
+      },
+      "key_backup": {
+        "name": "Back"
+      },
+      "key_channel_up": {
+        "name": "Channel up"
+      },
+      "key_channel_down": {
+        "name": "Channel down"
+      },
+      "key_interactive": {
+        "name": "Interactive"
+      },
+      "key_help": {
+        "name": "Help"
+      },
+      "key_services": {
+        "name": "Services"
+      },
+      "key_tv_guide": {
+        "name": "TV guide"
+      },
+      "key_red_button": {
+        "name": "Red button"
+      },
+      "key_i": {
+        "name": "Info"
+      },
+      "key_text": {
+        "name": "Text"
+      },
+      "key_up": {
+        "name": "Up"
+      },
+      "key_down": {
+        "name": "Down"
+      },
+      "key_left": {
+        "name": "Left"
+      },
+      "key_right": {
+        "name": "Right"
+      },
+      "key_red": {
+        "name": "Red"
+      },
+      "key_green": {
+        "name": "Green"
+      },
+      "key_yellow": {
+        "name": "Yellow"
+      },
+      "key_blue": {
+        "name": "Blue"
+      },
+      "key_digit_0": {
+        "name": "Digit 0"
+      },
+      "key_digit_1": {
+        "name": "Digit 1"
+      },
+      "key_digit_2": {
+        "name": "Digit 2"
+      },
+      "key_digit_3": {
+        "name": "Digit 3"
+      },
+      "key_digit_4": {
+        "name": "Digit 4"
+      },
+      "key_digit_5": {
+        "name": "Digit 5"
+      },
+      "key_digit_6": {
+        "name": "Digit 6"
+      },
+      "key_digit_7": {
+        "name": "Digit 7"
+      },
+      "key_digit_8": {
+        "name": "Digit 8"
+      },
+      "key_digit_9": {
+        "name": "Digit 9"
+      },
+      "key_play": {
+        "name": "Play"
+      },
+      "key_pause": {
+        "name": "Pause"
+      },
+      "key_stop": {
+        "name": "Stop"
+      },
+      "key_record": {
+        "name": "Record"
+      },
+      "key_fast_forward": {
+        "name": "Fast forward"
+      },
+      "key_rewind": {
+        "name": "Rewind"
+      },
+      "key_box_office": {
+        "name": "Box Office"
+      },
+      "key_sky": {
+        "name": "Sky"
+      }
+    },
+    "select": {
+      "channel": {
+        "name": "Channel"
+      },
+      "app": {
+        "name": "App"
+      }
+    }
+  },
+  "services": {
+    "send_keys": {
+      "name": "Send keys",
+      "description": "Presses a sequence of remote keys on a Sky Q box.",
+      "fields": {
+        "keys": {
+          "name": "Keys",
+          "description": "Key names in order, for example backup, 1, 0, 1 or tv_guide."
+        },
+        "delay": {
+          "name": "Delay",
+          "description": "Seconds between keys. Leave empty to use the integration's key delay."
+        }
+      }
+    },
+    "change_channel": {
+      "name": "Change channel",
+      "description": "Tunes a Sky Q box to a channel by typing its number.",
+      "fields": {
+        "channel": {
+          "name": "Channel",
+          "description": "Channel number such as 101, or sid:3008 for a service ID."
+        }
+      }
+    },
+    "launch_app": {
+      "name": "Open app",
+      "description": "Opens an installed app on a Sky Q box.",
+      "fields": {
+        "app": {
+          "name": "App",
+          "description": "App name or ID, for example YouTube or Netflix."
+        }
+      }
     }
   }
 }
