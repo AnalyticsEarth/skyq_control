@@ -68,3 +68,7 @@ uv run pytest                             # integration tests (mocked box, real 
 uv run ruff check . && uv run ruff format --check .
 SKYQ_GATEWAY=192.168.1.50 SKYQ_MINIS=192.168.1.51 uv run pytest tests/test_live.py -m live -s   # read-only, real boxes
 ```
+
+## Licence
+
+MIT; see [LICENSE](LICENSE). Not affiliated with or endorsed by Sky. "Sky" and "Sky Q" are trademarks of their owner.
