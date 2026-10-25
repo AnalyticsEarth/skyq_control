@@ -155,8 +155,8 @@ The boxes probed were one gateway (ES140, `192.168.1.50`) and three Minis (EM150
 - **Device triggers** for the same five types, built on the bus event. Turned on/off and disk thresholds use the media player's and sensors' own triggers.
 - **Dashboard:** `docs/dashboard.yaml`, a sections view of built-in cards (remote, now playing, recordings) generated for the gateway. `tests/test_dashboard.py` checks that all 58 entities it refers to exist and are enabled.
 - **Polish:**
-  - manifest `categories`;
-  - CI moved to `actions/checkout@v7` and `setup-uv@v10` (the Node 20 warning);
+  - CI moved to `actions/checkout@v7` and `setup-uv@v10.3.2` (the Node 20 warning; setup-uv no longer has floating major tags);
+  - manifest `categories` left out: HACS suggests it, but hassfest (2026.10) rejects the key;
   - the integration passes `mypy --strict` in CI, and the config flow uses `probatio`, which replaces voluptuous for flow schemas in HA 2026.10;
   - README sections for supported devices, limitations, troubleshooting, removal and automations;
   - `docs/QUALITY.md`, a self-assessment against the quality scale (Bronze to Gold met, Platinum mostly).

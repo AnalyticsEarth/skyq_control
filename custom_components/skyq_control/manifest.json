@@ -1,10 +1,6 @@
 {
   "domain": "skyq_control",
   "name": "Sky Q Control",
-  "categories": [
-    "media_entertainment.tv_streaming",
-    "buttons_remotes"
-  ],
   "codeowners": [
     "@AnalyticsEarth"
   ],
