@@ -1,0 +1,22 @@
+{
+  "domain": "skyq_control",
+  "name": "Sky Q Control",
+  "codeowners": [],
+  "config_flow": true,
+  "dependencies": [],
+  "documentation": "https://github.com/OWNER/skyq_control",
+  "integration_type": "device",
+  "iot_class": "local_push",
+  "issue_tracker": "https://github.com/OWNER/skyq_control/issues",
+  "loggers": ["aioskyq"],
+  "requirements": ["aioskyq==0.1.0"],
+  "ssdp": [
+    {
+      "deviceType": "urn:schemas-nds-com:device:GatewaySkyControl:2"
+    },
+    {
+      "deviceType": "urn:schemas-nds-com:device:MRSkyControl:2"
+    }
+  ],
+  "version": "0.1.0"
+}

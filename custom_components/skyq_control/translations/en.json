@@ -1,0 +1,75 @@
+{
+  "config": {
+    "flow_title": "{name}",
+    "step": {
+      "user": {
+        "title": "Add a Sky Q box",
+        "description": "These Sky Q boxes were found on your network. Add the gateway (main box) first so Minis are linked to it.",
+        "data": {
+          "host": "Box"
+        }
+      },
+      "manual": {
+        "title": "Add a Sky Q box",
+        "description": "Enter the IP address of a Sky Q gateway or Mini. Give the box a fixed address in your router so it keeps working.",
+        "data": {
+          "host": "IP address"
+        }
+      },
+      "confirm": {
+        "title": "Add {name}?",
+        "description": "Found a Sky Q box ({model}) at {host}."
+      },
+      "reconfigure": {
+        "title": "Change the box's address",
+        "description": "Enter the new IP address of this Sky Q box.",
+        "data": {
+          "host": "IP address"
+        }
+      }
+    },
+    "error": {
+      "cannot_connect": "Couldn't reach a Sky Q box at that address. Check the box is on (not unplugged) and on the same network.",
+      "unknown": "Unexpected error. Check the logs."
+    },
+    "abort": {
+      "already_configured": "This box is already set up.",
+      "already_in_progress": "This box is already being set up.",
+      "cannot_connect": "Couldn't reach the Sky Q box.",
+      "unsupported_device": "This device isn't a Sky Q set-top box. Sky Glass and Sky Stream aren't supported.",
+      "no_unique_id": "The box didn't report a serial number or MAC address, so it can't be added.",
+      "reconfigure_successful": "The box's address was updated.",
+      "wrong_device": "That address belongs to a different Sky Q box. Add it separately instead."
+    }
+  },
+  "options": {
+    "step": {
+      "init": {
+        "title": "Sky Q Control options",
+        "data": {
+          "key_gap": "Delay between key presses",
+          "scan_interval": "Playback refresh interval"
+        },
+        "data_description": {
+          "key_gap": "Sky Q ignores key presses that arrive too quickly. Increase this if channel changes miss digits.",
+          "scan_interval": "Channel changes aren't pushed by the box, so it is polled at this interval while it's on (every 30 s in standby)."
+        }
+      }
+    }
+  },
+  "selector": {
+    "host": {
+      "options": {
+        "manual": "Enter an IP address"
+      }
+    }
+  },
+  "exceptions": {
+    "unreachable": {
+      "message": "The Sky Q box at {host} isn't responding."
+    },
+    "wrong_device": {
+      "message": "The box at {host} is a different Sky Q box than this entry was set up for. Reconfigure the entry with the right address."
+    }
+  }
+}

@@ -1,0 +1,41 @@
+# Development environment for the skyq_control Home Assistant integration.
+# The integration itself ships as custom_components/skyq_control (via HACS);
+# the client library is the separate aioskyq/ package.
+[project]
+name = "skyq-control-dev"
+version = "0.0.0"
+requires-python = ">=3.14.2"
+dependencies = []
+
+[dependency-groups]
+dev = [
+    "aioskyq",
+    "pytest-cov>=7.1.0",
+    "pytest-homeassistant-custom-component==0.13.375",  # pins homeassistant==2026.10.4
+    "ruff>=0.6",
+]
+
+[tool.uv]
+package = false
+
+[tool.uv.sources]
+aioskyq = { path = "aioskyq", editable = true }
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+testpaths = ["tests"]
+markers = ["live: talks to real Sky Q boxes (set SKYQ_GATEWAY / SKYQ_MINIS)"]
+addopts = "-m 'not live'"
+
+[tool.ruff]
+line-length = 120
+target-version = "py314"
+extend-exclude = ["aioskyq"]
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "UP", "B", "ASYNC", "SIM", "RUF"]
+ignore = ["ASYNC109"]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["ASYNC110"]

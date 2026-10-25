@@ -145,6 +145,23 @@ The boxes probed were one gateway (ES140, `192.168.1.50`) and three Minis (EM150
 
 ## 4. Architecture
 
+**Phase 2 status:** done (2026-10-25). `custom_components/skyq_control` covers:
+- **Config flow:** SSDP discovery with confirm, a user scan or manual IP entry, reconfigure, and options (key spacing, poll interval).
+- **Per-box coordinator:** 5 s poll when on and 30 s in standby, push merging, and recordings fetched once per household.
+- **Device registry:** model, firmware, serial and MAC per box, with Minis linked via `via_device_id`.
+- **Diagnostics** with identifiers redacted.
+
+It was tested against HA 2026.10.4: 34 mocked tests and a live test on all four boxes.
+
+**HA 2026.10 changes picked up:**
+- `device_registry.async_get_device` is deprecated in favour of `async_get_device_by_identifier(identifier, config_entry_id)`, because identifiers are only unique per entry.
+- `DeviceInfo.via_device` is deprecated in favour of `via_device_id`.
+- `DeviceEntry.config_entries` is deprecated in favour of `config_entry_id`.
+
+**Notes for Phase 3:**
+- Coordinators only poll while entities listen, so the skeleton itself doesn't poll.
+- On live TV the visible app is `com.bskyb.epgui` (Sky's TV interface), which should count as "watching TV", not as an app.
+
 **Phase 1 status:** done. The `aioskyq/` package is a standalone library intended for PyPI, because Home Assistant installs integration requirements from PyPI. Its quirks and API are documented in `aioskyq/README.md`.
 
 ```
