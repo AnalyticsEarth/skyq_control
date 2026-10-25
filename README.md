@@ -15,9 +15,14 @@ A local-push Home Assistant integration that aims to expose **every control and 
 - **Reconfigure** an entry when a box gets a new IP address.
 - **Diagnostics** download with serials, card numbers and household IDs redacted.
 
-## Install (development)
+## Install with HACS
 
-The integration depends on [`aioskyq`](aioskyq/), which isn't on PyPI yet. Until it is, install it into Home Assistant's Python environment yourself (for example `pip install ./aioskyq`), then copy `custom_components/skyq_control` into your Home Assistant `config/custom_components/` folder and restart.
+1. In Home Assistant, open **HACS → ⋮ → Custom repositories**.
+2. Add `https://github.com/AnalyticsEarth/skyq_control` with type **Integration**.
+3. Find **Sky Q Control** in HACS, download it, and restart Home Assistant.
+4. Your boxes should be discovered automatically (**Settings → Devices & services**). Otherwise, choose **Add integration → Sky Q Control** and pick or type a box's IP address. Add the gateway first so Minis are linked to it.
+
+Give each box a fixed IP address in your router. The client library (`aioskyq`) is bundled inside the integration, so nothing is installed from PyPI.
 
 ## Repository layout
 
