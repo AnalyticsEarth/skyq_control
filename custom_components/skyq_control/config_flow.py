@@ -21,8 +21,7 @@ from homeassistant.helpers.selector import (
 )
 from homeassistant.helpers.service_info.ssdp import SsdpServiceInfo
 
-from aioskyq import DeviceInfo, SkyQBox, SkyQError, SkyQUnsupportedDeviceError, discover
-
+from .aioskyq import DeviceInfo, SkyQBox, SkyQError, SkyQUnsupportedDeviceError, discover
 from .const import (
     CONF_KEY_GAP,
     CONF_SCAN_INTERVAL,

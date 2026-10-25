@@ -16,6 +16,8 @@ import urllib.request
 from datetime import UTC, datetime
 from pathlib import Path
 
+from scrub_fixtures import scrub_fixtures
+
 OUT = Path(__file__).parent / "fixtures"
 FAKE_UUID = "00000000-0000-4000-8000-0000000000{n:02d}"
 
@@ -109,6 +111,7 @@ def main(gateway_dir: str, mini_dir: str) -> None:
     ):
         with urllib.request.urlopen(urllib.request.Request(url, headers=headers), timeout=15) as resp:
             put(name, json.load(resp))
+    scrub_fixtures()
     print(f"wrote fixtures to {OUT} (ips: {len(ip_map)}, uuids: {len(uuid_map)}, pvr items: {len(picked)})")
 
 

@@ -9,7 +9,6 @@ dependencies = []
 
 [dependency-groups]
 dev = [
-    "aioskyq",
     "pytest-cov>=7.1.0",
     "pytest-homeassistant-custom-component==0.13.375",  # pins homeassistant==2026.10.4
     "ruff>=0.6",
@@ -17,9 +16,6 @@ dev = [
 
 [tool.uv]
 package = false
-
-[tool.uv.sources]
-aioskyq = { path = "aioskyq", editable = true }
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"
@@ -31,7 +27,7 @@ addopts = "-m 'not live'"
 [tool.ruff]
 line-length = 120
 target-version = "py314"
-extend-exclude = ["aioskyq"]
+extend-exclude = ["aioskyq", "custom_components/skyq_control/aioskyq"]
 
 [tool.ruff.lint]
 select = ["E", "F", "W", "I", "UP", "B", "ASYNC", "SIM", "RUF"]

@@ -11,7 +11,7 @@ from homeassistant.core import HomeAssistant
 from homeassistant.data_entry_flow import FlowResultType
 from homeassistant.helpers.service_info.ssdp import SsdpServiceInfo
 
-from aioskyq import DiscoveredBox, SkyQUnsupportedDeviceError
+from custom_components.skyq_control.aioskyq import DiscoveredBox, SkyQUnsupportedDeviceError
 from custom_components.skyq_control.const import CONF_KEY_GAP, CONF_SCAN_INTERVAL, DOMAIN, MANUAL_ENTRY
 
 from .conftest import GATEWAY_HOST, GATEWAY_SERIAL, MINI_HOST, MINI_SERIAL, FakeBox, make_entry, setup_entry

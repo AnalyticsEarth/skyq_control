@@ -15,12 +15,11 @@ from typing import Any
 from unittest.mock import AsyncMock, MagicMock, patch
 
 import pytest
-from aioskyq.soap import UpnpDevice
 from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant
 from pytest_homeassistant_custom_component.common import MockConfigEntry
 
-from aioskyq import (
+from custom_components.skyq_control.aioskyq import (
     App,
     AppsStatus,
     Channel,
@@ -38,6 +37,7 @@ from aioskyq import (
     SystemStatus,
     TransportInfo,
 )
+from custom_components.skyq_control.aioskyq.soap import UpnpDevice
 from custom_components.skyq_control.const import DOMAIN
 
 FIXTURES = Path(__file__).parents[1] / "aioskyq" / "tests" / "fixtures"
@@ -163,7 +163,7 @@ def boxes() -> dict[str, FakeBox]:
 @pytest.fixture
 def mock_skyq(boxes: dict[str, FakeBox]) -> Generator[MagicMock]:
     """Patch SkyQBox everywhere; unknown hosts behave like a box that is off."""
-    from aioskyq import SkyQConnectionError
+    from custom_components.skyq_control.aioskyq import SkyQConnectionError
 
     def factory(host: str, *args: Any, **kwargs: Any) -> MagicMock:
         if host in boxes:

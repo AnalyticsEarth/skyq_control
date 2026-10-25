@@ -5,8 +5,7 @@ from __future__ import annotations
 from homeassistant.helpers.device_registry import CONNECTION_NETWORK_MAC, DeviceInfo, format_mac
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
 
-from aioskyq import DeviceInfo as SkyQDeviceInfo
-
+from .aioskyq import DeviceInfo as SkyQDeviceInfo
 from .const import DOMAIN
 from .coordinator import SkyQCoordinator
 

@@ -14,7 +14,7 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry, async_
 from pytest_homeassistant_custom_component.components.diagnostics import get_diagnostics_for_config_entry
 from pytest_homeassistant_custom_component.typing import ClientSessionGenerator
 
-from aioskyq import PowerState, SkyQConnectionError
+from custom_components.skyq_control.aioskyq import PowerState, SkyQConnectionError
 from custom_components.skyq_control.const import DOMAIN
 
 from .conftest import GATEWAY_HOST, GATEWAY_SERIAL, MINI_HOST, MINI_SERIAL, FakeBox, make_entry
@@ -183,7 +183,7 @@ async def test_pvr_and_channel_list_pushes_refetch(
 
 
 async def test_guide_and_soap_failures_are_tolerated(hass: HomeAssistant, boxes: dict[str, FakeBox]) -> None:
-    from aioskyq import SkyQSoapError
+    from custom_components.skyq_control.aioskyq import SkyQSoapError
 
     box = boxes[GATEWAY_HOST].mock
     box.epg.now_and_next = AsyncMock(side_effect=SkyQConnectionError("guide down"))

@@ -14,7 +14,7 @@ from homeassistant.const import CONF_HOST
 from homeassistant.core import HomeAssistant, callback
 from homeassistant.helpers.update_coordinator import DataUpdateCoordinator, UpdateFailed
 
-from aioskyq import (
+from .aioskyq import (
     App,
     AppsStatus,
     Channel,
@@ -35,7 +35,6 @@ from aioskyq import (
     SystemStatus,
     TransportInfo,
 )
-
 from .const import (
     CONF_SCAN_INTERVAL,
     DEFAULT_SCAN_INTERVAL,

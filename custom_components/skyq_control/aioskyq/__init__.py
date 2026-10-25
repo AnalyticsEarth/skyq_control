@@ -1,0 +1,85 @@
+# Bundled copy of aioskyq; edit aioskyq/src/aioskyq and run scripts/sync_aioskyq.py.
+"""Async client for the local network API of Sky Q set-top boxes."""
+
+from .client import SkyQBox
+from .const import DeviceType, Key, PowerState, RecordingStatus, TransportState
+from .discovery import DiscoveredBox, discover
+from .epg import EpgClient
+from .exceptions import (
+    SkyQApiError,
+    SkyQConnectionError,
+    SkyQError,
+    SkyQNotFoundError,
+    SkyQNotSupportedError,
+    SkyQSoapError,
+    SkyQTimeoutError,
+    SkyQTransportLockedError,
+    SkyQUnsupportedDeviceError,
+)
+from .models import (
+    App,
+    AppsStatus,
+    Channel,
+    ChannelDetails,
+    DeviceInfo,
+    EpgEvent,
+    Favourite,
+    Genre,
+    MediaInfo,
+    NowPlaying,
+    PinStatus,
+    PositionInfo,
+    PvrStatus,
+    Recording,
+    RecordingList,
+    Storage,
+    SystemStatus,
+    SystemTime,
+    TransportInfo,
+    channel_logo_url,
+    programme_image_url,
+)
+
+__version__ = "0.1.0"
+
+__all__ = [
+    "App",
+    "AppsStatus",
+    "Channel",
+    "ChannelDetails",
+    "DeviceInfo",
+    "DeviceType",
+    "DiscoveredBox",
+    "EpgClient",
+    "EpgEvent",
+    "Favourite",
+    "Genre",
+    "Key",
+    "MediaInfo",
+    "NowPlaying",
+    "PinStatus",
+    "PositionInfo",
+    "PowerState",
+    "PvrStatus",
+    "Recording",
+    "RecordingList",
+    "RecordingStatus",
+    "SkyQApiError",
+    "SkyQBox",
+    "SkyQConnectionError",
+    "SkyQError",
+    "SkyQNotFoundError",
+    "SkyQNotSupportedError",
+    "SkyQSoapError",
+    "SkyQTimeoutError",
+    "SkyQTransportLockedError",
+    "SkyQUnsupportedDeviceError",
+    "Storage",
+    "SystemStatus",
+    "SystemTime",
+    "TransportInfo",
+    "TransportState",
+    "channel_logo_url",
+    "discover",
+    "programme_image_url",
+]

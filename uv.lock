@@ -226,26 +226,6 @@ wheels = [
 ]
 
 [[package]]
-name = "aioskyq"
-version = "0.1.0"
-source = { editable = "aioskyq" }
-dependencies = [
-    { name = "aiohttp" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "aiohttp", specifier = ">=3.9" }]
-
-[package.metadata.requires-dev]
-dev = [
-    { name = "mypy", specifier = ">=1.11" },
-    { name = "pytest", specifier = ">=8" },
-    { name = "pytest-asyncio", specifier = ">=0.24" },
-    { name = "pytest-cov", specifier = ">=5" },
-    { name = "ruff", specifier = ">=0.6" },
-]
-
-[[package]]
 name = "aiozoneinfo"
 version = "0.2.3"
 source = { registry = "https://pypi.org/simple" }
@@ -2817,7 +2797,6 @@ source = { virtual = "." }
 
 [package.dev-dependencies]
 dev = [
-    { name = "aioskyq" },
     { name = "pytest-cov" },
     { name = "pytest-homeassistant-custom-component" },
     { name = "ruff" },
@@ -2827,7 +2806,6 @@ dev = [
 
 [package.metadata.requires-dev]
 dev = [
-    { name = "aioskyq", editable = "aioskyq" },
     { name = "pytest-cov", specifier = ">=7.1.0" },
     { name = "pytest-homeassistant-custom-component", specifier = "==0.13.375" },
     { name = "ruff", specifier = ">=0.6" },

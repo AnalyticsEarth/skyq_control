@@ -11,8 +11,7 @@ from homeassistant.exceptions import ConfigEntryError
 from homeassistant.helpers import device_registry as dr
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
 
-from aioskyq import DeviceInfo, SkyQBox
-
+from .aioskyq import DeviceInfo, SkyQBox
 from .const import CONF_KEY_GAP, DEFAULT_KEY_GAP, DOMAIN
 from .coordinator import SkyQCoordinator
 from .entity import device_identifier, device_info_for

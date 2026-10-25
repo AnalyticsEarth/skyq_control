@@ -19,7 +19,7 @@ from pytest_homeassistant_custom_component.common import MockConfigEntry
 from pytest_homeassistant_custom_component.components.diagnostics import get_diagnostics_for_config_entry
 from pytest_homeassistant_custom_component.typing import ClientSessionGenerator
 
-from aioskyq import PowerState
+from custom_components.skyq_control.aioskyq import PowerState
 from custom_components.skyq_control.const import DOMAIN
 
 GATEWAY = os.environ.get("SKYQ_GATEWAY", "")
@@ -53,7 +53,7 @@ async def test_live_household(
     import aiohttp
     from homeassistant.setup import async_setup_component
 
-    from aioskyq import SkyQBox
+    from custom_components.skyq_control.aioskyq import SkyQBox
 
     # The harness's shared HA session uses a DNS resolver bound to another loop; use a plain one,
     # as a real Home Assistant would.
