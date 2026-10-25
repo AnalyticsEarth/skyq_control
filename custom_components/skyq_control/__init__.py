@@ -19,6 +19,7 @@ from .aioskyq import DeviceInfo, EpgClient, SkyQBox
 from .const import CONF_KEY_GAP, DEFAULT_KEY_GAP, DOMAIN
 from .coordinator import SkyQCoordinator
 from .entity import device_identifier, device_info_for
+from .events import BoxEvents
 from .services import async_setup_services
 
 _LOGGER = logging.getLogger(__name__)
@@ -27,6 +28,7 @@ PLATFORMS: list[Platform] = [
     Platform.BINARY_SENSOR,
     Platform.BUTTON,
     Platform.CALENDAR,
+    Platform.EVENT,
     Platform.IMAGE,
     Platform.MEDIA_PLAYER,
     Platform.REMOTE,
@@ -80,7 +82,9 @@ async def async_setup_entry(hass: HomeAssistant, entry: SkyQConfigEntry) -> bool
 
     box.epg = guide_client(hass, box.territory)  # the territory is known once device info has been read
     entry.runtime_data = coordinator
-    async_register_device(hass, entry, device)
+    device_entry = async_register_device(hass, entry, device)
+    coordinator.events = BoxEvents(hass, coordinator, device_entry.id)
+    entry.async_on_unload(coordinator.events.async_start())
     await coordinator.async_start_push()
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
     return True
@@ -105,24 +109,21 @@ async def async_unload_entry(hass: HomeAssistant, entry: SkyQConfigEntry) -> boo
 
 
 @callback
-def async_register_device(hass: HomeAssistant, entry: SkyQConfigEntry, device: DeviceInfo) -> None:
+def async_register_device(hass: HomeAssistant, entry: SkyQConfigEntry, device: DeviceInfo) -> dr.DeviceEntry:
     """Create or update the box's device, and link Minis to their gateway."""
     registry = dr.async_get(hass)
     via_device_id = None
     if not device.is_gateway and device.gateway_ip_address:
         via_device_id = _gateway_device_id(hass, device.gateway_ip_address)
-    registry.async_get_or_create(
-        config_entry_id=entry.entry_id,
-        **device_info_for(device, entry.data[CONF_HOST]),
-        **({"via_device_id": via_device_id} if via_device_id else {}),
-    )
+    info = device_info_for(device, entry.data[CONF_HOST])
+    if via_device_id:
+        info["via_device_id"] = via_device_id
+    device_entry = registry.async_get_or_create(config_entry_id=entry.entry_id, **info)
 
     if not device.is_gateway:
-        return
+        return device_entry
     # Minis added before their gateway get linked now.
-    gateway = registry.async_get_device_by_identifier(device_identifier(device, entry.data[CONF_HOST]), entry.entry_id)
-    if gateway is None:
-        return
+    gateway = device_entry
     for other in hass.config_entries.async_entries(DOMAIN):
         if other.entry_id == entry.entry_id or other.state is not ConfigEntryState.LOADED:
             continue
@@ -135,6 +136,7 @@ def async_register_device(hass: HomeAssistant, entry: SkyQConfigEntry, device: D
         if mini is not None and mini.via_device_id != gateway.id:
             registry.async_update_device(mini.id, via_device_id=gateway.id)
         other.runtime_data.async_update_listeners()  # its recorder entities now defer to the gateway
+    return device_entry
 
 
 def _gateway_device_id(hass: HomeAssistant, gateway_ip: str) -> str | None:

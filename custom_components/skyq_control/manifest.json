@@ -1,6 +1,10 @@
 {
   "domain": "skyq_control",
   "name": "Sky Q Control",
+  "categories": [
+    "media_entertainment.tv_streaming",
+    "buttons_remotes"
+  ],
   "codeowners": [
     "@AnalyticsEarth"
   ],
@@ -19,5 +23,5 @@
       "deviceType": "urn:schemas-nds-com:device:MRSkyControl:2"
     }
   ],
-  "version": "0.5.0"
+  "version": "0.6.0"
 }

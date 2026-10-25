@@ -6,7 +6,7 @@ import logging
 from typing import Any
 from urllib.parse import urlparse
 
-import voluptuous as vol
+import probatio
 from homeassistant.config_entries import ConfigEntry, ConfigFlow, ConfigFlowResult, OptionsFlowWithReload
 from homeassistant.const import CONF_HOST
 from homeassistant.core import callback
@@ -33,7 +33,7 @@ from .const import (
 
 _LOGGER = logging.getLogger(__name__)
 
-HOST_SCHEMA = vol.Schema({vol.Required(CONF_HOST): str})
+HOST_SCHEMA = probatio.Schema({probatio.Required(CONF_HOST): str})
 
 
 class CannotConnect(Exception):
@@ -101,8 +101,12 @@ class SkyQConfigFlow(ConfigFlow, domain=DOMAIN):
         options.append(SelectOptionDict(value=MANUAL_ENTRY, label="Enter an IP address"))
         return self.async_show_form(
             step_id="user",
-            data_schema=vol.Schema(
-                {vol.Required(CONF_HOST): SelectSelector(SelectSelectorConfig(options=options, translation_key="host"))}
+            data_schema=probatio.Schema(
+                {
+                    probatio.Required(CONF_HOST): SelectSelector(
+                        SelectSelectorConfig(options=options, translation_key="host")
+                    )
+                }
             ),
         )
 
@@ -201,14 +205,14 @@ class SkyQOptionsFlow(OptionsFlowWithReload):
     async def async_step_init(self, user_input: dict[str, Any] | None = None) -> ConfigFlowResult:
         if user_input is not None:
             return self.async_create_entry(data=user_input)
-        schema = vol.Schema(
+        schema = probatio.Schema(
             {
-                vol.Required(CONF_KEY_GAP, default=DEFAULT_KEY_GAP): NumberSelector(
+                probatio.Required(CONF_KEY_GAP, default=DEFAULT_KEY_GAP): NumberSelector(
                     NumberSelectorConfig(
                         min=0.2, max=2.0, step=0.1, unit_of_measurement="s", mode=NumberSelectorMode.SLIDER
                     )
                 ),
-                vol.Required(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): NumberSelector(
+                probatio.Required(CONF_SCAN_INTERVAL, default=DEFAULT_SCAN_INTERVAL): NumberSelector(
                     NumberSelectorConfig(min=2, max=60, step=1, unit_of_measurement="s", mode=NumberSelectorMode.BOX)
                 ),
             }

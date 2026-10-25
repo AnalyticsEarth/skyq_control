@@ -409,6 +409,31 @@
       "recordings": {
         "name": "Recordings"
       }
+    },
+    "event": {
+      "playback": {
+        "name": "Playback",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "channel_changed": "Channel changed",
+              "app_changed": "App changed"
+            }
+          }
+        }
+      },
+      "recordings": {
+        "name": "Recordings",
+        "state_attributes": {
+          "event_type": {
+            "state": {
+              "recording_started": "Recording started",
+              "recording_finished": "Recording finished",
+              "recording_failed": "Recording failed"
+            }
+          }
+        }
+      }
     }
   },
   "services": {
@@ -577,6 +602,15 @@
     "get_apps": {
       "name": "Get apps",
       "description": "Returns the apps installed on the box, with the IDs Open app accepts."
+    }
+  },
+  "device_automation": {
+    "trigger_type": {
+      "channel_changed": "Channel changed",
+      "app_changed": "App opened or closed",
+      "recording_started": "Recording started",
+      "recording_finished": "Recording finished",
+      "recording_failed": "Recording failed"
     }
   }
 }

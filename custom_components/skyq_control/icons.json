@@ -263,6 +263,14 @@
       "recordings": {
         "default": "mdi:filmstrip-box-multiple"
       }
+    },
+    "event": {
+      "playback": {
+        "default": "mdi:television-play"
+      },
+      "recordings": {
+        "default": "mdi:record-rec"
+      }
     }
   },
   "services": {

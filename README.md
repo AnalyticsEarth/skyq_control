@@ -2,7 +2,7 @@
 
 A local-push Home Assistant integration that aims to expose **every control and every piece of metadata** a Sky Q box offers on the local network. It supports gateways and Minis. Sky Glass and Sky Stream use a different platform and are not supported.
 
-> **Status: v0.5.0.** Controls, the TV guide, the box's metadata and recordings are in: a media player with a guide and recordings browser, a remote, a button for every remote key, channel and app pickers, sensors, binary sensors, artwork images, recordings calendars, and actions for automations covering the guide and recordings. Events, device triggers and a ready-made dashboard come next. See [docs/PLAN.md](docs/PLAN.md).
+> **Status: v0.6.0.** Everything in the plan is in: a media player with a guide and recordings browser, a remote, a button for every remote key, channel and app pickers, sensors, binary sensors, artwork images, recordings calendars, events and device triggers, actions for automations covering the guide and recordings, and a ready-made dashboard. See [docs/PLAN.md](docs/PLAN.md).
 
 ## What you get per box
 
@@ -15,6 +15,7 @@ A local-push Home Assistant integration that aims to expose **every control and 
 | **Sensors** | What's on (channel, programme, when it ends, next programme, app, playback state). On the gateway: disk usage, used, free and size, and counts of recordings, scheduled, failed and deleted recordings, what's recording now and the next recording. Diagnostics: software version, firmware build, last boot, wake reason, bouquet, guide available until, software update, entitlements, smartcard, PIN tries left, and on Minis the gateway's address. Household ID and viewing-card number are disabled by default. |
 | **Binary sensors** | Power, recording (gateway), watching a recording, gateway connection (Minis), network, recorder, DRM and guide-data problems, software update, smartcard active, and UHD, HDR, picture-in-picture and streaming capability. |
 | **Images** | Programme artwork and the channel logo. |
+| **Events** | **Playback** (channel changed, app opened or closed) and, on the gateway, **Recordings** (started, finished, failed), with details as attributes. |
 | **Calendars** (gateway) | **Scheduled recordings** (including anything recording now) and **Recordings** already made, each with the channel, synopsis and recording ID. |
 
 **Actions for automations** (target a Sky Q media player):
@@ -41,6 +42,28 @@ response_variable: guide
 
 `media_player.play_media` also accepts `channel`, `app` and `keys` as media types.
 
+## Automations
+
+Each box's device offers these triggers: **channel changed**, **app opened or closed**, and on the gateway **recording started**, **finished** and **failed**. Turned on/off comes from the media player, and disk-usage thresholds from the Disk usage sensor. The same events are fired on the bus as `skyq_control_event`, with `device_id`, `type` and details (channel, app, recording title and ID, failure reason):
+
+```yaml
+triggers:
+  - trigger: event
+    event_type: skyq_control_event
+    event_data:
+      type: recording_failed
+actions:
+  - action: notify.notify
+    data:
+      message: "Sky Q couldn't record {{ trigger.event.data.title }}: {{ trigger.event.data.failure_reason }}"
+```
+
+Other ideas: dim the lights when a film channel comes on (`channel_changed`), pause the robot vacuum while an app is open, or record the next episode with `skyq_control.record` and the media player's `next_event_id`.
+
+## Dashboard
+
+[docs/dashboard.yaml](docs/dashboard.yaml) is a ready-made dashboard built from built-in cards: a full remote (D-pad, colour keys, transport, number pad), now playing with artwork and now/next, channel and app pickers, a disk-usage gauge, recording counts and the recordings calendars. Create a new dashboard, open its raw configuration editor and paste the file. It uses the gateway's entities; for a Mini, replace `sky_q_gateway` with the Mini's name.
+
 Under the hood:
 - Playback is polled every 5 s while a box is on (30 s in standby), because the box doesn't announce channel changes. App, standby, recording and channel-list changes arrive by push.
 - Commands go over the box's remote-control port, because Sky Q blocks the UPnP transport controls.
@@ -55,6 +78,33 @@ Under the hood:
 4. Your boxes should be discovered automatically (**Settings → Devices & services**). Otherwise, choose **Add integration → Sky Q Control** and pick or type a box's IP address. Add the gateway first so Minis are linked to it.
 
 Give each box a fixed IP address in your router. The client library (`aioskyq`) is bundled inside the integration, so nothing is installed from PyPI.
+
+## Supported devices
+
+Sky Q gateways (the main box: ES130, ES140, ES240, ES340) and Sky Q Minis (EM150), in the UK and Ireland. Developed against an ES240 gateway and three EM150 Minis on Sky Q software Q370. Sky Glass, Sky Stream and Sky+HD aren't Sky Q and aren't supported; Germany and Italy may work but are untested.
+
+## Known limitations
+
+- **No remote playback of recordings.** Sky Q locks its UPnP transport, so recordings can be listed, booked, kept, locked and deleted, but not started from Home Assistant.
+- **Channel changes aren't pushed** by the box, so they're picked up by polling (every 5 s by default).
+- **Channels are changed by typing their number**, so the box shows its number entry briefly. If digits get missed, raise *Delay between key presses* in the integration's options.
+- **The guide comes from Sky's public, unofficial metadata service** (no account needed). If Sky changes it, the guide, now/next and artwork stop until the integration is updated; everything else keeps working.
+- **No HDMI/HDCP details:** current Sky Q firmware doesn't report them.
+- **Minis in standby** suspend their link to the gateway; the *Gateway connection* sensor shows this with the reason.
+- Erasing every recording at once and booking pay-per-view events are deliberately not offered.
+
+## Troubleshooting
+
+- **A box isn't found:** it must be on the same network and subnet as Home Assistant (SSDP doesn't cross VLANs). Add it by IP address instead.
+- **A box shows as unavailable:** it's unplugged or in deep standby. Boxes in normal standby stay available and show as off.
+- **Channel changes land on the wrong channel:** increase *Delay between key presses* (Settings → Devices & services → Sky Q Control → Configure).
+- **No guide data:** check Home Assistant can reach `awk.epgsky.com` and `atlantis.epgsky.com`.
+- **A Mini's recording sensors went unavailable after adding the gateway:** recordings now come from the gateway; reload the Mini to remove the duplicates.
+- **Anything else:** download diagnostics from the box's device page (serials, card numbers and household IDs are redacted) and open an issue.
+
+## Removing the integration
+
+Settings → Devices & services → Sky Q Control → ⋮ on each box → **Delete**. Then remove *Sky Q Control* in HACS and restart Home Assistant. Nothing is stored on the boxes.
 
 ## Repository layout
 

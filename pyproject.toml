@@ -9,6 +9,7 @@ dependencies = []
 
 [dependency-groups]
 dev = [
+    "mypy>=2.4.0",
     "pytest-cov>=7.1.0",
     "pytest-homeassistant-custom-component==0.13.375",  # pins homeassistant==2026.10.4
     "ruff>=0.6",
@@ -35,3 +36,12 @@ ignore = ["ASYNC109"]
 
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["ASYNC110"]
+
+[tool.mypy]
+# Strict for the integration; the bundled aioskyq is checked in its own package.
+files = ["custom_components/skyq_control"]
+exclude = ["custom_components/skyq_control/aioskyq/"]
+python_version = "3.14"
+strict = true
+ignore_missing_imports = true
+implicit_reexport = true  # Home Assistant's own modules re-export their public names

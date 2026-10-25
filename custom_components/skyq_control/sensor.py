@@ -124,14 +124,23 @@ def _next_recording_attributes(data: SkyQData) -> dict[str, Any] | None:
 
 # ------------------------------------------------------------------ descriptions
 
-_MB = {
-    "device_class": SensorDeviceClass.DATA_SIZE,
-    "native_unit_of_measurement": UnitOfInformation.MEGABYTES,
-    "suggested_unit_of_measurement": UnitOfInformation.GIGABYTES,
-    "suggested_display_precision": 0,
-    "state_class": SensorStateClass.MEASUREMENT,
-    "pvr": True,
-}
+
+def _megabytes(
+    key: str, value_fn: Callable[[SkyQData], StateType], entity_category: EntityCategory | None = None
+) -> SkyQSensorDescription:
+    """Recorder space: the box reports megabytes, shown as gigabytes."""
+    return SkyQSensorDescription(
+        key=key,
+        translation_key=key,
+        device_class=SensorDeviceClass.DATA_SIZE,
+        native_unit_of_measurement=UnitOfInformation.MEGABYTES,
+        suggested_unit_of_measurement=UnitOfInformation.GIGABYTES,
+        suggested_display_precision=0,
+        state_class=SensorStateClass.MEASUREMENT,
+        entity_category=entity_category,
+        value_fn=value_fn,
+        pvr=True,
+    )
 
 
 def _count(key: str, *statuses: RecordingStatus) -> SkyQSensorDescription:
@@ -200,24 +209,10 @@ SENSORS: tuple[SkyQSensorDescription, ...] = (
         value_fn=lambda data: data.storage.used_percent if data.storage else None,
         pvr=True,
     ),
-    SkyQSensorDescription(
-        key="storage_used",
-        translation_key="storage_used",
-        value_fn=lambda data: data.storage.used_mb if data.storage else None,
-        **_MB,
-    ),
-    SkyQSensorDescription(
-        key="storage_free",
-        translation_key="storage_free",
-        value_fn=lambda data: data.storage.free_mb if data.storage else None,
-        **_MB,
-    ),
-    SkyQSensorDescription(
-        key="storage_total",
-        translation_key="storage_total",
-        entity_category=EntityCategory.DIAGNOSTIC,
-        value_fn=lambda data: data.storage.quota_mb if data.storage else None,
-        **_MB,
+    _megabytes("storage_used", lambda data: data.storage.used_mb if data.storage else None),
+    _megabytes("storage_free", lambda data: data.storage.free_mb if data.storage else None),
+    _megabytes(
+        "storage_total", lambda data: data.storage.quota_mb if data.storage else None, EntityCategory.DIAGNOSTIC
     ),
     _count("recordings_recorded", RecordingStatus.RECORDED, RecordingStatus.PART_RECORDED),
     _count("recordings_scheduled", RecordingStatus.SCHEDULED),

@@ -47,6 +47,7 @@ from .const import (
 
 if TYPE_CHECKING:
     from . import SkyQConfigEntry
+    from .events import BoxEvents
 
 _LOGGER = logging.getLogger(__name__)
 
@@ -104,6 +105,7 @@ class SkyQCoordinator(DataUpdateCoordinator[SkyQData]):
         )
         self._due: dict[str, float] = {}  # monotonic time each slow group is next due
         self._unsubscribe: list[Callable[[], None]] = []
+        self.events: BoxEvents | None = None  # set once the box's device is registered
 
     # ------------------------------------------------------------------ polling
 
@@ -138,8 +140,9 @@ class SkyQCoordinator(DataUpdateCoordinator[SkyQData]):
             return self
         gateway_ip = self.data.device.gateway_ip_address if self.data else None
         for entry in self.hass.config_entries.async_loaded_entries(DOMAIN):
-            if entry.data.get(CONF_HOST) == gateway_ip and entry.runtime_data.fetches_pvr:
-                return entry.runtime_data
+            other: SkyQCoordinator = entry.runtime_data
+            if entry.data.get(CONF_HOST) == gateway_ip and other.fetches_pvr:
+                return other
         return None
 
     async def _async_update_data(self) -> SkyQData:

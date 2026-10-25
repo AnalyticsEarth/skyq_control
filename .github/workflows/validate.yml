@@ -10,7 +10,7 @@ jobs:
   hassfest:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - uses: home-assistant/actions/hassfest@master
 
   hacs:
@@ -23,8 +23,8 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v6
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v10
       - run: uv python install 3.14
       - name: aioskyq
         working-directory: aioskyq
@@ -39,4 +39,5 @@ jobs:
         run: |
           uv sync
           uv run ruff check custom_components tests && uv run ruff format --check custom_components tests
+          uv run mypy
           uv run pytest -q

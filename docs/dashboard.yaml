@@ -1,0 +1,645 @@
+# Sky Q dashboard for the skyq_control integration.
+#
+# Settings -> Dashboards -> Add dashboard -> New dashboard from scratch, open it,
+# then ⋮ -> Edit dashboard -> ⋮ -> Raw configuration editor, and paste this file.
+#
+# It uses the gateway's entities (sky_q_gateway). For a Mini, replace every
+# "sky_q_gateway" with its name, for example "sky_q_mini_192_168_1_51", and drop the
+# Recordings section (recordings live on the gateway).
+# Only built-in cards are used.
+
+title: Sky Q
+views:
+- title: Sky Q
+  path: sky-q
+  icon: mdi:television
+  type: sections
+  max_columns: 3
+  sections:
+  - type: grid
+    cards:
+    - type: heading
+      heading: Remote
+    - type: vertical-stack
+      cards:
+      - type: grid
+        columns: 3
+        square: false
+        cards:
+        - type: button
+          entity: button.sky_q_gateway_power
+          icon: mdi:power
+          show_name: true
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_power
+          hold_action:
+            action: none
+          name: Power
+        - type: button
+          entity: button.sky_q_gateway_sky
+          icon: mdi:home
+          show_name: true
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_sky
+          hold_action:
+            action: none
+          name: Sky
+        - type: button
+          entity: button.sky_q_gateway_tv_guide
+          icon: mdi:television-guide
+          show_name: true
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_tv_guide
+          hold_action:
+            action: none
+          name: Guide
+      - type: grid
+        columns: 3
+        square: true
+        cards:
+        - type: button
+          entity: button.sky_q_gateway_back
+          icon: mdi:arrow-u-left-top
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_back
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_up
+          icon: mdi:chevron-up
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_up
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_info
+          icon: mdi:information-outline
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_info
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_left
+          icon: mdi:chevron-left
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_left
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_select
+          icon: mdi:checkbox-blank-circle-outline
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_select
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_right
+          icon: mdi:chevron-right
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_right
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_channel_up
+          icon: mdi:arrow-up-bold-box
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_channel_up
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_down
+          icon: mdi:chevron-down
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_down
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_channel_down
+          icon: mdi:arrow-down-bold-box
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_channel_down
+          hold_action:
+            action: none
+      - type: grid
+        columns: 4
+        square: false
+        cards:
+        - type: tile
+          entity: button.sky_q_gateway_red
+          color: red
+          show_entity_picture: false
+          hide_state: true
+          vertical: true
+          icon: mdi:circle
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_red
+          icon_tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_red
+        - type: tile
+          entity: button.sky_q_gateway_green
+          color: green
+          show_entity_picture: false
+          hide_state: true
+          vertical: true
+          icon: mdi:circle
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_green
+          icon_tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_green
+        - type: tile
+          entity: button.sky_q_gateway_yellow
+          color: yellow
+          show_entity_picture: false
+          hide_state: true
+          vertical: true
+          icon: mdi:circle
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_yellow
+          icon_tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_yellow
+        - type: tile
+          entity: button.sky_q_gateway_blue
+          color: blue
+          show_entity_picture: false
+          hide_state: true
+          vertical: true
+          icon: mdi:circle
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_blue
+          icon_tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_blue
+      - type: grid
+        columns: 6
+        square: true
+        cards:
+        - type: button
+          entity: button.sky_q_gateway_rewind
+          icon: mdi:rewind
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_rewind
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_play
+          icon: mdi:play
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_play
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_pause
+          icon: mdi:pause
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_pause
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_stop
+          icon: mdi:stop
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_stop
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_fast_forward
+          icon: mdi:fast-forward
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_fast_forward
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_record
+          icon: mdi:record-rec
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_record
+          hold_action:
+            action: none
+      - type: grid
+        columns: 3
+        square: false
+        cards:
+        - type: button
+          entity: button.sky_q_gateway_digit_1
+          icon: mdi:numeric-1
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_digit_1
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_digit_2
+          icon: mdi:numeric-2
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_digit_2
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_digit_3
+          icon: mdi:numeric-3
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_digit_3
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_digit_4
+          icon: mdi:numeric-4
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_digit_4
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_digit_5
+          icon: mdi:numeric-5
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_digit_5
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_digit_6
+          icon: mdi:numeric-6
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_digit_6
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_digit_7
+          icon: mdi:numeric-7
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_digit_7
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_digit_8
+          icon: mdi:numeric-8
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_digit_8
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_digit_9
+          icon: mdi:numeric-9
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_digit_9
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_text
+          icon: mdi:text-box-outline
+          show_name: true
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_text
+          hold_action:
+            action: none
+          name: Text
+        - type: button
+          entity: button.sky_q_gateway_digit_0
+          icon: mdi:numeric-0
+          show_name: false
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_digit_0
+          hold_action:
+            action: none
+        - type: button
+          entity: button.sky_q_gateway_red_button
+          icon: mdi:circle-double
+          show_name: true
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_red_button
+          hold_action:
+            action: none
+          name: Red button
+      - type: grid
+        columns: 4
+        square: false
+        cards:
+        - type: button
+          entity: button.sky_q_gateway_interactive
+          icon: mdi:gesture-tap
+          show_name: true
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_interactive
+          hold_action:
+            action: none
+          name: Interactive
+        - type: button
+          entity: button.sky_q_gateway_services
+          icon: mdi:cog-outline
+          show_name: true
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_services
+          hold_action:
+            action: none
+          name: Services
+        - type: button
+          entity: button.sky_q_gateway_help
+          icon: mdi:help-circle-outline
+          show_name: true
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_help
+          hold_action:
+            action: none
+          name: Help
+        - type: button
+          entity: button.sky_q_gateway_box_office
+          icon: mdi:ticket
+          show_name: true
+          show_state: false
+          icon_height: 32px
+          tap_action:
+            action: perform-action
+            perform_action: button.press
+            target:
+              entity_id: button.sky_q_gateway_box_office
+          hold_action:
+            action: none
+          name: Box Office
+  - type: grid
+    cards:
+    - type: heading
+      heading: Now playing
+    - type: vertical-stack
+      cards:
+      - type: media-control
+        entity: media_player.sky_q_gateway
+      - type: picture-entity
+        entity: image.sky_q_gateway_programme_artwork
+        show_name: false
+        show_state: false
+      - type: entities
+        title: On now
+        entities:
+        - sensor.sky_q_gateway_channel
+        - sensor.sky_q_gateway_programme
+        - sensor.sky_q_gateway_programme_ends
+        - sensor.sky_q_gateway_next_programme
+        - sensor.sky_q_gateway_app
+        - sensor.sky_q_gateway_playback
+      - type: entities
+        title: Change
+        entities:
+        - select.sky_q_gateway_channel
+        - select.sky_q_gateway_app
+      - type: markdown
+        title: Guide
+        content: '{% set p = ''sensor.sky_q_gateway_programme'' %}{% set n = ''sensor.sky_q_gateway_next_programme'' %}
+
+          **Now:** {{ states(p) }}{% if state_attr(p, ''end'') %} (until {{ as_timestamp(state_attr(p, ''end'')) | timestamp_custom(''%H:%M'')
+          }}){% endif %}
+
+
+          {{ state_attr(p, ''synopsis'') or '''' }}
+
+
+          **Next:** {{ states(n) }}{% if state_attr(n, ''start'') %} at {{ as_timestamp(state_attr(n, ''start'')) | timestamp_custom(''%H:%M'')
+          }}{% endif %}
+
+
+          Open the media player''s **Browse media** for the full guide.'
+  - type: grid
+    cards:
+    - type: heading
+      heading: Recordings
+    - type: vertical-stack
+      cards:
+      - type: gauge
+        entity: sensor.sky_q_gateway_disk_usage
+        name: Recording space
+        min: 0
+        max: 100
+        needle: true
+        severity:
+          green: 0
+          yellow: 75
+          red: 90
+      - type: glance
+        entities:
+        - entity: sensor.sky_q_gateway_recordings
+          name: Recorded
+        - entity: sensor.sky_q_gateway_scheduled_recordings
+          name: Booked
+        - entity: sensor.sky_q_gateway_recording_now
+          name: Now
+        - entity: sensor.sky_q_gateway_failed_recordings
+          name: Failed
+      - type: entities
+        entities:
+        - sensor.sky_q_gateway_next_recording
+        - binary_sensor.sky_q_gateway_recording
+        - event.sky_q_gateway_recordings
+      - type: calendar
+        initial_view: listWeek
+        entities:
+        - calendar.sky_q_gateway_scheduled_recordings
+        - calendar.sky_q_gateway_recordings

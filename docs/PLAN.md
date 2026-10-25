@@ -145,6 +145,23 @@ The boxes probed were one gateway (ES140, `192.168.1.50`) and three Minis (EM150
 
 ## 4. Architecture
 
+**v0.6.0 (2026-10-25): Phase 6 (events, triggers, dashboard, polish).**
+- **Events** (`events.py`): each update is compared with the last.
+  - Playback events: `channel_changed` (including when a box comes back on a channel) and `app_changed` (leaving an app for TV is reported as no app; Sky's own TV UI doesn't count).
+  - Recording events, on the recordings box only: `recording_started`, `recording_finished` (from recording or scheduled to recorded or part-recorded) and `recording_failed`. Items in the trash are ignored.
+  - Nothing fires for what was already true at setup.
+  - Each event is fired on the bus as `skyq_control_event` with `device_id`, `type` and details, and passed to the box's event entities.
+- **Event entities:** Playback, and Recordings on the recordings box.
+- **Device triggers** for the same five types, built on the bus event. Turned on/off and disk thresholds use the media player's and sensors' own triggers.
+- **Dashboard:** `docs/dashboard.yaml`, a sections view of built-in cards (remote, now playing, recordings) generated for the gateway. `tests/test_dashboard.py` checks that all 58 entities it refers to exist and are enabled.
+- **Polish:**
+  - manifest `categories`;
+  - CI moved to `actions/checkout@v7` and `setup-uv@v10` (the Node 20 warning);
+  - the integration passes `mypy --strict` in CI, and the config flow uses `probatio`, which replaces voluptuous for flow schemas in HA 2026.10;
+  - README sections for supported devices, limitations, troubleshooting, removal and automations;
+  - `docs/QUALITY.md`, a self-assessment against the quality scale (Bronze to Gold met, Platinum mostly).
+- **Still the user's to do:** tag a release (`gh release create`) when ready.
+
 **v0.5.0 (2026-10-25): the rest of Phase 5 (recordings).**
 - **Actions** (target any Sky Q media player; a Mini passes PVR calls to its gateway):
   - `record_now`;
@@ -297,7 +314,7 @@ Ship a ready-made dashboard (YAML in `docs/dashboard.yaml`) that has a full remo
 | 3. Controls | `media_player`, `remote`, `button`, `select`, `send_keys`/`change_channel` actions | Every key can be pressed from the UI |
 | 4. Metadata ✅ v0.4.0 | All sensors and binary sensors from §5, plus `image` | Every field in §3 maps to an entity or attribute |
 | 5. PVR & EPG ✅ v0.5.0 | PVR actions, calendar, response actions, browse media, now/next | Booking, keeping, locking and deleting work end to end |
-| 6. Events & polish | Event entities, device triggers, dashboard YAML, HACS packaging (`hacs.json`, hassfest + HACS GitHub Actions), README, quality-scale checklist | Passes hassfest and HACS validation; tagged release |
+| 6. Events & polish ✅ v0.6.0 | Event entities, device triggers, dashboard YAML, HACS packaging (`hacs.json`, hassfest + HACS GitHub Actions), README, quality-scale checklist | Passes hassfest and HACS validation; tagged release |
 
 ## 7. Risks and decisions
 
