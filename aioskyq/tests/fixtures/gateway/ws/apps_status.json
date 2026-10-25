@@ -1,0 +1,44 @@
+{
+  "apps": [
+    {
+      "appId": "com.bskyb.broadcastmetrics.st419",
+      "launchMethod": "LOCAL",
+      "status": "RUNNING"
+    },
+    {
+      "appId": "com.bskyb.epgui",
+      "launchMethod": "LOCAL",
+      "status": "RUNNING"
+    },
+    {
+      "appId": "com.bskyb.localstore.st419",
+      "launchMethod": "LOCAL",
+      "status": "RUNNING"
+    },
+    {
+      "appId": "com.bskyb.metriccollector.st419",
+      "launchMethod": "LOCAL",
+      "status": "RUNNING"
+    },
+    {
+      "appId": "com.bskyb.metricextentedinfo.st419",
+      "launchMethod": "LOCAL",
+      "status": "RUNNING"
+    },
+    {
+      "appId": "com.bskyb.metricstore.st419",
+      "launchMethod": "LOCAL",
+      "status": "RUNNING"
+    },
+    {
+      "appId": "com.bskyb.metricuploader.st419",
+      "launchMethod": "LOCAL",
+      "status": "RUNNING"
+    },
+    {
+      "appId": "YouTube",
+      "launchMethod": "VOICE",
+      "status": "VISIBLE"
+    }
+  ]
+}

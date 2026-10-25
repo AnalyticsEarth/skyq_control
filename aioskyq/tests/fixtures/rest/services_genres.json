@@ -1,0 +1,85 @@
+{
+  "genres": [
+    {
+      "sg": 0,
+      "t": "Undefined",
+      "xsg": 0
+    },
+    {
+      "sg": 21,
+      "t": "Shopping",
+      "xsg": 1
+    },
+    {
+      "sg": 18,
+      "t": "Kids",
+      "xsg": 2
+    },
+    {
+      "sg": 12,
+      "t": "Entertainment",
+      "xsg": 3
+    },
+    {
+      "sg": 20,
+      "t": "Radio",
+      "xsg": 4
+    },
+    {
+      "sg": 16,
+      "t": "News",
+      "xsg": 5
+    },
+    {
+      "sg": 14,
+      "t": "Movies",
+      "xsg": 6
+    },
+    {
+      "sg": 15,
+      "t": "Sports",
+      "xsg": 7
+    },
+    {
+      "sg": 13,
+      "t": "Lifestyle & Culture",
+      "xsg": 8
+    },
+    {
+      "sg": 26,
+      "t": "Adult",
+      "xsg": 9
+    },
+    {
+      "sg": 24,
+      "t": "Gaming & Dating",
+      "xsg": 10
+    },
+    {
+      "sg": 17,
+      "t": "Documentaries",
+      "xsg": 11
+    },
+    {
+      "sg": 19,
+      "t": "Music",
+      "xsg": 12
+    },
+    {
+      "sg": 22,
+      "t": "Religion",
+      "xsg": 13
+    },
+    {
+      "sg": 23,
+      "t": "International",
+      "xsg": 14
+    },
+    {
+      "sg": 25,
+      "t": "Specialist",
+      "xsg": 15
+    }
+  ],
+  "version": 1
+}

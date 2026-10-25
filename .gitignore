@@ -1,0 +1,30 @@
+# Raw probe output: real responses from your boxes (recording titles, channel state).
+# Redacted, but still personal; sanitized test fixtures live in aioskyq/tests/fixtures.
+probe_results/
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+build/
+dist/
+.venv/
+venv/
+
+# Tooling caches and reports
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+.coverage.*
+htmlcov/
+
+# Editors and OS
+.DS_Store
+.idea/
+.vscode/
+*.swp
+
+# Local environment
+.env
+.env.*

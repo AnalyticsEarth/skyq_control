@@ -1,0 +1,246 @@
+<?xml version="1.0" encoding="utf-8"?>
+<scpd xmlns="urn:schemas-upnp-org:service-1-0">
+  <specVersion>
+    <major>1</major>
+    <minor>0</minor>
+  </specVersion>
+  <actionList>
+    <action>
+      <name>GetDeviceStatus</name>
+      <argumentList>
+        <argument>
+          <name>DeviceStatus</name>
+          <direction>out</direction>
+          <relatedStateVariable>DeviceStatus</relatedStateVariable>
+        </argument>
+      </argumentList>
+    </action>
+    <action>
+      <name>X_NDS_PvrServicesActive</name> <!--[START] BMS::PvrServicesActive action from Client/device to GW -->
+      <argumentList>
+        <argument>
+          <name>DeviceUdn</name>
+          <direction>in</direction>
+          <relatedStateVariable>X_NDS_A_ARG_TYPE_DeviceUdn</relatedStateVariable>
+        </argument>
+        <argument>
+          <name>Result</name>
+          <direction>out</direction>
+          <relatedStateVariable>X_NDS_A_ARG_TYPE_Result</relatedStateVariable>
+        </argument>
+      </argumentList>
+    </action> <!--[END] BMS::PvrServicesActive-->
+    <action>
+      <name>X_NDS_SubmitPin</name>
+      <argumentList>
+        <argument>
+          <name>Pin</name>
+          <direction>in</direction>
+          <relatedStateVariable>X_NDS_A_ARG_TYPE_Pin</relatedStateVariable>
+        </argument>
+        <argument>
+          <name>PinResult</name>
+          <direction>out</direction>
+          <relatedStateVariable>X_NDS_A_ARG_TYPE_PinResult</relatedStateVariable>
+        </argument>
+      </argumentList>
+    </action>
+    <action>
+      <name>X_NDS_GetJWT</name>
+      <argumentList>
+        <argument>
+          <name>Name</name>
+          <direction>in</direction>
+          <relatedStateVariable>X_NDS_A_ARG_TYPE_Name</relatedStateVariable>
+        </argument>
+        <argument>
+          <name>Token</name>
+          <direction>out</direction>
+          <relatedStateVariable>X_NDS_A_ARG_TYPE_Token</relatedStateVariable>
+        </argument>
+      </argumentList>
+    </action>
+    <action>
+      <name>X_NDS_SetJWT</name>
+      <argumentList>
+        <argument>
+          <name>Name</name>
+          <direction>in</direction>
+          <relatedStateVariable>X_NDS_A_ARG_TYPE_Name</relatedStateVariable>
+        </argument>
+        <argument>
+          <name>Token</name>
+          <direction>in</direction>
+          <relatedStateVariable>X_NDS_A_ARG_TYPE_Token</relatedStateVariable>
+        </argument>
+      </argumentList>
+    </action>
+    <action>
+      <name>X_NDS_DeleteJWT</name>
+      <argumentList>
+        <argument>
+          <name>Name</name>
+          <direction>in</direction>
+          <relatedStateVariable>X_NDS_A_ARG_TYPE_Name</relatedStateVariable>
+        </argument>
+      </argumentList>
+    </action>
+      <action>
+      <name>X_NDS_SetNameValuePair</name>
+      <argumentList>
+        <argument>
+          <name>NameValuePairCategory</name>
+          <direction>in</direction>
+          <relatedStateVariable>X_NDS_A_ARG_TYPE_NameValuePairCategory</relatedStateVariable>
+        </argument>
+        <argument>
+          <name>NameValuePairName</name>
+          <direction>in</direction>
+          <relatedStateVariable>X_NDS_A_ARG_TYPE_NameValuePairName</relatedStateVariable>
+        </argument>
+        <argument>
+          <name>NameValuePairValue</name>
+          <direction>in</direction>
+          <relatedStateVariable>X_NDS_A_ARG_TYPE_NameValuePairValue</relatedStateVariable>
+        </argument>
+      </argumentList>
+    </action>
+    <action>
+      <name>X_NDS_GetSharedNameValuePairs</name>
+      <argumentList>
+        <argument>
+          <name>NameValuePairCategory</name>
+          <direction>in</direction>
+          <relatedStateVariable>X_NDS_A_ARG_TYPE_NameValuePairCategory</relatedStateVariable>
+        </argument>
+        <argument>
+          <name>NameValuePairs</name>
+          <direction>out</direction>
+          <relatedStateVariable>X_NDS_A_ARG_TYPE_NameValuePairs</relatedStateVariable>
+        </argument>
+      </argumentList>
+    </action>
+  </actionList>
+  <serviceStateTable>
+    <stateVariable sendEvents="yes">
+      <name>DeviceStatus</name>
+      <dataType>string</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="yes">
+      <name>X_NDS_LTOInfo</name>
+      <dataType>string</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="no"> <!--[START] BMS::PvrServicesActive action from Client/device to GW -->
+      <name>X_NDS_A_ARG_TYPE_DeviceUdn</name>
+      <dataType>string</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="no">
+      <name>X_NDS_A_ARG_TYPE_Result</name>
+      <dataType>string</dataType>
+    </stateVariable> <!--[END] BMS::PvrServicesActive-->
+    <stateVariable sendEvents="yes">
+      <name>X_NDS_GWPvrServiceStatus</name>
+      <dataType>string</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="yes">
+      <name>X_NDS_PVR_GracePeriodState</name>
+      <dataType>string</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="yes">
+      <name>X_NDS_PVR_ViewingCardState</name>
+      <dataType>string</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="yes">
+      <name>X_NDS_PVR_Entitlements</name>
+      <dataType>string</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="yes">
+      <name>X_NDS_PVR_DisklessMode</name>
+      <dataType>string</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="yes">
+      <name>X_NDS_PVR_PVRState</name>
+      <dataType>string</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="yes">
+      <name>X_NDS_PVR_PVRReason</name>
+      <dataType>string</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="yes">
+      <name>X_NDS_PVR_ServiceListAvailable</name>
+      <dataType>string</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="yes">
+      <name>X_NDS_PVR_ScheduleAvailable</name>
+      <dataType>string</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="no">
+      <name>X_NDS_A_ARG_TYPE_Pin</name>
+      <dataType>ui4</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="no">
+      <name>X_NDS_A_ARG_TYPE_PinResult</name>
+      <dataType>string</dataType>
+      <allowedValueList>
+        <allowedValue>PIN_OK</allowedValue>
+        <allowedValue>PIN_INVALID</allowedValue>
+      </allowedValueList>
+    </stateVariable>
+    <stateVariable sendEvents="yes">
+      <name>X_NDS_PinRetriesLeft</name>
+      <dataType>ui4</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="yes">
+      <name>X_NDS_Bouquet</name>
+      <dataType>string</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="yes">
+      <name>X_NDS_CasId</name>
+      <dataType>ui4</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="yes">
+      <name>X_NDS_CatalogueRegion</name>
+      <dataType>ui4</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="yes">
+      <name>X_NDS_CatalogueTrialBits</name>
+      <dataType>ui4</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="yes">
+      <name>X_NDS_ViewingCardNumber</name>
+      <dataType>string</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="yes">
+      <name>X_NDS_PVR_ScheduleLastDate</name>
+      <dataType>string</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="yes">
+      <name>X_NDS_CurrencyId</name>
+      <dataType>string</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="no">
+      <name>X_NDS_A_ARG_TYPE_Name</name>
+      <dataType>string</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="no">
+      <name>X_NDS_A_ARG_TYPE_Token</name>
+      <dataType>string</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="no">
+      <name>X_NDS_A_ARG_TYPE_NameValuePairCategory</name>
+      <dataType>string</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="no">
+      <name>X_NDS_A_ARG_TYPE_NameValuePairName</name>
+      <dataType>string</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="no">
+      <name>X_NDS_A_ARG_TYPE_NameValuePairValue</name>
+      <dataType>string</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="no">
+      <name>X_NDS_A_ARG_TYPE_NameValuePairs</name>
+      <dataType>string</dataType>
+    </stateVariable>
+  </serviceStateTable>
+</scpd>

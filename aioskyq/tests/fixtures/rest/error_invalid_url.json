@@ -1,0 +1,5 @@
+{
+  "developerMessage": "An URL which did not translate into an AS call was received. The URL was GET 9006/as",
+  "errorCode": 101,
+  "userMessage": "Invalid URL"
+}

@@ -1,0 +1,82 @@
+{
+  "drmstatus": {
+    "state": "available"
+  },
+  "entitlements": [
+    "HD",
+    "SKY+",
+    "ULTRA+",
+    "GATEWAYENABLER",
+    "PDL",
+    "SKY_DRM_CE",
+    "SKY_DRM_MR"
+  ],
+  "epginfobits": {
+    "epginfobits": "0xDCE5FFC0",
+    "mask": "0x1FFA823F",
+    "state": "available"
+  },
+  "gatewayservices": {
+    "gatewayASPort": 9008,
+    "gatewayIPAddress": "192.0.2.10",
+    "paired": true,
+    "state": "available"
+  },
+  "network": {
+    "state": "available"
+  },
+  "nssplayback": {
+    "state": "available"
+  },
+  "pvr": {
+    "state": "available"
+  },
+  "schedule": {
+    "lastdate": "20261101",
+    "state": "available"
+  },
+  "servicelist": {
+    "state": "available"
+  },
+  "smartcard": {
+    "active": true,
+    "bouquet": "4101",
+    "countryCode": "GBR",
+    "currency": "GBP",
+    "cwe": true,
+    "householdid": "**REDACTED**",
+    "paired": true,
+    "state": "available",
+    "subbouquet": "1",
+    "transactionlimit": 65535,
+    "viewingCardNumber": "**REDACTED**"
+  },
+  "swupdate": {
+    "reason": "IDLE",
+    "state": "unavailable"
+  },
+  "systemstate": {
+    "state": "active"
+  },
+  "systemupdates": {
+    "applaunchrequest": 0,
+    "apps": 2,
+    "capabilities": 3,
+    "downloadqueue": 1,
+    "entitlements": 2,
+    "hdmi": 77,
+    "install": 2,
+    "messages": 0,
+    "netflix": 1,
+    "network": 2,
+    "servicegenres": 1,
+    "smartcard": 2,
+    "state": 7,
+    "time": 1,
+    "tokens": "**REDACTED**"
+  },
+  "updatetask": {
+    "reason": "no update",
+    "state": "unavailable"
+  }
+}

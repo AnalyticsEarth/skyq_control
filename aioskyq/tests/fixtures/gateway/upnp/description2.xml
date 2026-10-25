@@ -1,0 +1,31 @@
+<?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+<specVersion>
+<major>1</major>
+<minor>0</minor>
+</specVersion>
+<device>
+<deviceType>urn:schemas-nds-com:device:GatewaySkyRemote:2</deviceType>
+<modelDescription>32B12C</modelDescription>
+<modelName>Sky+HD</modelName>
+<modelNumber>Q370.000.09.00L (6akmkck)</modelNumber>
+<friendlyName>BSKYB_GATEWAY</friendlyName>
+<manufacturer>Sky</manufacturer>
+<nds:X_NDS_ChipID xmlns:nds="urn:schemas-nds-com:device-1-0">0000000000</nds:X_NDS_ChipID><nds:X_NDS_Configuration_Manifest xmlns:nds="urn:schemas-nds-com:device-1-0">http://192.0.2.10:0//</nds:X_NDS_Configuration_Manifest>
+<nds:X_NDS_PortNumber xmlns:nds="urn:schemas-nds-com:device-1-0">1234</nds:X_NDS_PortNumber>
+<nds:X_NDS_DSSURI xmlns:nds="urn:schemas-nds-com:device-1-0">http://192.0.2.10:8080</nds:X_NDS_DSSURI>
+<nds:X_NDS_LowPowerCapability xmlns:nds="urn:schemas-nds-com:device-1-0">true</nds:X_NDS_LowPowerCapability>
+<nds:X_NDS_StreamingCapable xmlns:nds="urn:schemas-nds-com:device-1-0">false</nds:X_NDS_StreamingCapable>
+<UDN>uuid:00000000-0000-4000-8000-000000000003</UDN>
+<serviceList>
+<service>
+<serviceType>urn:schemas-nds-com:service:SkyRemote:1</serviceType>
+<serviceId>urn:nds-com:serviceId:SkyRemote</serviceId>
+<SCPDURL>/player_rui_cds.xml</SCPDURL>
+<controlURL>/00000000-0000-4000-8000-000000000003SkyRemote</controlURL>
+<eventSubURL>/00000000-0000-4000-8000-000000000003SkyRemote</eventSubURL>
+</service>
+</serviceList>
+</device>
+<URLBase>http://192.0.2.10:49153/</URLBase>
+</root>

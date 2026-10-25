@@ -1,0 +1,17 @@
+{
+  "ASVersion": "Q370.000.09.00-AS_37.2.1",
+  "IPAddress": "192.0.2.11",
+  "bouquet": 4101,
+  "countryCode": "GBR",
+  "currentAdSmartVersion": "1.0",
+  "gateway": false,
+  "hardwareName": "MR BOX",
+  "householdToken": "**REDACTED**",
+  "modelNumber": "Q370.000.09.00L (6akmkck)",
+  "nextAdSmartVersion": "1.0",
+  "pipCapable": false,
+  "serialNumber": "**REDACTED**",
+  "streamingCapable": true,
+  "subbouquet": 1,
+  "versionNumber": "32D001"
+}

@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<scpd xmlns="urn:schemas-upnp-org:service-1-0">
+  <specVersion>
+    <major>1</major>
+    <minor>0</minor>
+  </specVersion>
+  <serviceStateTable>
+    <stateVariable sendEvents="no">
+      <name>X_NDS_GWPairing</name>
+      <dataType>string</dataType>
+      <defaultValue></defaultValue>
+    </stateVariable>
+    <stateVariable sendEvents="no">
+      <name>X_NDS_A_ARG_TYPE_GatewayToken</name>
+      <dataType>string</dataType>
+      <defaultValue></defaultValue>
+    </stateVariable>
+    <stateVariable sendEvents="no">
+      <name>X_NDS_A_ARG_TYPE_ActiveSoftwareVersion</name>
+      <dataType>ui4</dataType>
+    </stateVariable>
+    <stateVariable sendEvents="no">
+      <name>X_NDS_A_ARG_TYPE_InActiveSoftwareVersion</name>
+      <dataType>ui4</dataType>
+    </stateVariable>
+  </serviceStateTable>
+  <actionList>
+    <action>
+      <name>X_NDS_GetPairingInfo</name>
+      <argumentList>
+        <argument>
+          <name>GatewayToken</name>
+          <direction>out</direction>
+          <relatedStateVariable>X_NDS_A_ARG_TYPE_GatewayToken</relatedStateVariable>
+        </argument>
+      </argumentList>
+    </action>
+    <action>
+      <name>X_NDS_GetGatewaySoftwareVersion</name>
+      <argumentList>
+        <argument>
+          <name>GwActiveSwVersion</name>
+          <direction>out</direction>
+          <relatedStateVariable>X_NDS_A_ARG_TYPE_ActiveSoftwareVersion</relatedStateVariable>
+        </argument>
+        <argument>
+          <name>GwInActiveSwVersion</name>
+          <direction>out</direction>
+          <relatedStateVariable>X_NDS_A_ARG_TYPE_InActiveSoftwareVersion</relatedStateVariable>
+        </argument>
+      </argumentList>
+    </action>
+  </actionList>
+</scpd>

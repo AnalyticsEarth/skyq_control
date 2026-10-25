@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+<specVersion>
+<major>1</major>
+<minor>0</minor>
+</specVersion>
+<device>
+<deviceType>urn:schemas-nds-com:device:MRSkyControl:2</deviceType>
+<modelDescription>32D001</modelDescription>
+<modelName>Sky+HD</modelName>
+<modelNumber>Q370.000.09.00L (6akmkck)</modelNumber>
+<friendlyName>000000000</friendlyName>
+<manufacturer>Sky</manufacturer>
+<nds:X_NDS_ChipID xmlns:nds="urn:schemas-nds-com:device-1-0">0000000000</nds:X_NDS_ChipID><nds:X_NDS_PortNumber xmlns:nds="urn:schemas-nds-com:device-1-0">0</nds:X_NDS_PortNumber>
+<nds:X_NDS_LowPowerCapability xmlns:nds="urn:schemas-nds-com:device-1-0">false</nds:X_NDS_LowPowerCapability>
+<nds:X_NDS_StreamingCapable xmlns:nds="urn:schemas-nds-com:device-1-0">false</nds:X_NDS_StreamingCapable>
+<UDN>uuid:00000000-0000-4000-8000-000000000001</UDN>
+<serviceList>
+<service>
+<serviceType>urn:schemas-nds-com:service:SkyPlay:2</serviceType>
+<serviceId>urn:nds-com:serviceId:SkyPlay</serviceId>
+<SCPDURL>/player_avt.xml</SCPDURL>
+<controlURL>/00000000-0000-4000-8000-000000000001SkyPlay</controlURL>
+<eventSubURL>/00000000-0000-4000-8000-000000000001SkyPlay</eventSubURL>
+</service>
+<service>
+<serviceType>urn:schemas-nds-com:service:SkyCM:2</serviceType>
+<serviceId>urn:nds-com:serviceId:SkyCM</serviceId>
+<SCPDURL>/player_cm.xml</SCPDURL>
+<controlURL>/00000000-0000-4000-8000-000000000001SkyCM</controlURL>
+<eventSubURL>/00000000-0000-4000-8000-000000000001SkyCM</eventSubURL>
+</service>
+<service>
+<serviceType>urn:schemas-nds-com:service:SkyRC:2</serviceType>
+<serviceId>urn:nds-com:serviceId:SkyRC</serviceId>
+<SCPDURL>/player_rc.xml</SCPDURL>
+<controlURL>/00000000-0000-4000-8000-000000000001SkyRC</controlURL>
+<eventSubURL>/00000000-0000-4000-8000-000000000001SkyRC</eventSubURL>
+</service>
+</serviceList>
+</device>
+<URLBase>http://192.0.2.11:49153/</URLBase>
+</root>

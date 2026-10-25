@@ -1,0 +1,15 @@
+{
+  "details": {
+    "dvbtriplet": "2.2050.6931",
+    "isbroadcasting": true,
+    "upgradeMessage": "BBC ONE for the Kent and East Sussex. Find out more about the South East and the other BBC English regions at www.bbc.co.uk/england"
+  },
+  "sid": "3008",
+  "streamingprofiles": [
+    {
+      "name": "AnExample",
+      "suri": "http://192.0.2.10:4730/trans_caption/CHAN%3Alocator%3A5%3A3%3ABC0/profileAnExample.ttml",
+      "uri": "http://192.0.2.10:4730/trans/CHAN%3Alocator%3A5%3A3%3ABC0/profileAnExample.ts"
+    }
+  ]
+}

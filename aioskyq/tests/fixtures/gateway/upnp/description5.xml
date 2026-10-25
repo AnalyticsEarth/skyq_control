@@ -1,0 +1,62 @@
+<?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+<specVersion>
+<major>1</major>
+<minor>0</minor>
+</specVersion>
+<device>
+<deviceType>urn:schemas-nds-com:device:GatewaySkyServe:2</deviceType>
+<nds:X_NDS_Device_Type xmlns:nds="urn:schemas-nds-com:device-1-0">FusionSatelliteGateway</nds:X_NDS_Device_Type>
+<modelDescription>32B12C</modelDescription>
+<modelName>Sky+HD</modelName>
+<modelNumber>Q370.000.09.00L (6akmkck)</modelNumber>
+<friendlyName>BSKYB_GATEWAY</friendlyName>
+<manufacturer>Sky</manufacturer>
+<nds:X_NDS_ChipID xmlns:nds="urn:schemas-nds-com:device-1-0">0000000000</nds:X_NDS_ChipID><nds:X_NDS_Configuration_Manifest xmlns:nds="urn:schemas-nds-com:device-1-0">http://192.0.2.10:0//</nds:X_NDS_Configuration_Manifest>
+<nds:X_NDS_PortNumber xmlns:nds="urn:schemas-nds-com:device-1-0">1234</nds:X_NDS_PortNumber>
+<nds:X_NDS_HouseholdID xmlns:nds="urn:schemas-nds-com:device-1-0">0041ED3C</nds:X_NDS_HouseholdID>
+<nds:X_NDS_DSSURI xmlns:nds="urn:schemas-nds-com:device-1-0">http://192.0.2.10:8080</nds:X_NDS_DSSURI>
+<nds:X_NDS_GatewayUDN xmlns:nds="urn:schemas-nds-com:device-1-0">uuid:00000000-0000-4000-8000-000000000002</nds:X_NDS_GatewayUDN>
+<nds:X_NDS_LowPowerCapability xmlns:nds="urn:schemas-nds-com:device-1-0">true</nds:X_NDS_LowPowerCapability>
+<nds:X_NDS_StreamingCapable xmlns:nds="urn:schemas-nds-com:device-1-0">true</nds:X_NDS_StreamingCapable>
+<UDN>uuid:00000000-0000-4000-8000-000000000002</UDN>
+<serviceList>
+<service>
+<serviceType>urn:schemas-nds-com:service:SkyCM:2</serviceType>
+<serviceId>urn:nds-com:serviceId:SkyCM</serviceId>
+<SCPDURL>/dms_cm.xml</SCPDURL>
+<controlURL>/00000000-0000-4000-8000-000000000002SkyCM</controlURL>
+<eventSubURL>/00000000-0000-4000-8000-000000000002SkyCM</eventSubURL>
+</service>
+<service>
+<serviceType>urn:schemas-nds-com:service:SkyPlay:2</serviceType>
+<serviceId>urn:nds-com:serviceId:SkyPlay</serviceId>
+<SCPDURL>/dms_avt.xml</SCPDURL>
+<controlURL>/00000000-0000-4000-8000-000000000002SkyPlay</controlURL>
+<eventSubURL>/00000000-0000-4000-8000-000000000002SkyPlay</eventSubURL>
+</service>
+<service>
+<serviceType>urn:schemas-upnp-org:service:BasicManagement:1</serviceType>
+<serviceId>urn:upnp-org:serviceId:BasicManagement</serviceId>
+<SCPDURL>/spm_bms_ethan.xml</SCPDURL>
+<controlURL>/00000000-0000-4000-8000-000000000002BasicManagement</controlURL>
+<eventSubURL>/00000000-0000-4000-8000-000000000002BasicManagement</eventSubURL>
+</service>
+<service>
+<serviceType>urn:schemas-nds-com:service:SkyBook:2</serviceType>
+<serviceId>urn:nds-com:serviceId:SkyBook</serviceId>
+<SCPDURL>/scm_srs.xml</SCPDURL>
+<controlURL>/00000000-0000-4000-8000-000000000002SkyBook</controlURL>
+<eventSubURL>/00000000-0000-4000-8000-000000000002SkyBook</eventSubURL>
+</service>
+<service>
+<serviceType>urn:schemas-nds-com:service:SkyBrowse:2</serviceType>
+<serviceId>urn:nds-com:serviceId:SkyBrowse</serviceId>
+<SCPDURL>/scm_cds.xml</SCPDURL>
+<controlURL>/00000000-0000-4000-8000-000000000002SkyBrowse</controlURL>
+<eventSubURL>/00000000-0000-4000-8000-000000000002SkyBrowse</eventSubURL>
+</service>
+</serviceList>
+</device>
+<URLBase>http://192.0.2.10:49153/</URLBase>
+</root>

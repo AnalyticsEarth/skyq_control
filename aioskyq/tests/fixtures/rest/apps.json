@@ -1,0 +1,115 @@
+{
+  "apps": [
+    {
+      "appId": "DisneyPlus",
+      "blocked": false,
+      "catalogueId": "DisneyPlus",
+      "entitlements": "ETHAN_APP_1",
+      "extended": {},
+      "icons": [
+        {
+          "APPTRAY": "http://127.0.0.1:8008/pm/icons/DisneyPlus/APPTRAY"
+        }
+      ],
+      "imgIcon": "http://127.0.0.1:8008/pm/icons/DisneyPlus",
+      "pinLocked": false,
+      "pinManagement": "READ-WRITE",
+      "title": "Disney+",
+      "validCert": false,
+      "version": "370006.5.1.612012000",
+      "visibleOnTray": false,
+      "voiceEnabled": false
+    },
+    {
+      "appId": "Netflix",
+      "blocked": false,
+      "entitlements": "ETHAN_APP_1",
+      "extended": {},
+      "icons": [
+        {
+          "APPTRAY": "http://127.0.0.1:8008/pm/icons/Netflix/APPTRAY"
+        }
+      ],
+      "imgIcon": "http://127.0.0.1:8008/pm/icons/Netflix",
+      "pinLocked": false,
+      "pinManagement": "READ-WRITE",
+      "title": "Netflix",
+      "validCert": false,
+      "version": "2.2.0",
+      "visibleOnTray": false,
+      "voiceEnabled": false
+    },
+    {
+      "appId": "YouTube",
+      "blocked": false,
+      "entitlements": "ETHAN_APP_1",
+      "extended": {},
+      "icons": [
+        {
+          "APPTRAY": "http://127.0.0.1:8008/pm/icons/YouTube/APPTRAY"
+        }
+      ],
+      "imgIcon": "http://127.0.0.1:8008/pm/icons/YouTube",
+      "pinLocked": false,
+      "pinManagement": "READ-WRITE",
+      "title": "YouTube",
+      "validCert": false,
+      "version": "4.0.2",
+      "visibleOnTray": false,
+      "voiceEnabled": false
+    },
+    {
+      "appId": "apple.tv",
+      "blocked": false,
+      "catalogueId": "apple.tv",
+      "entitlements": "ETHAN_APP_1",
+      "extended": {},
+      "icons": [
+        {
+          "APPTRAY": "http://127.0.0.1:8008/pm/icons/apple.tv/APPTRAY"
+        }
+      ],
+      "imgIcon": "http://127.0.0.1:8008/pm/icons/apple.tv",
+      "pinLocked": false,
+      "pinManagement": "READ-WRITE",
+      "title": "Apple TV",
+      "validCert": false,
+      "version": "3.7.1.410300",
+      "visibleOnTray": false,
+      "voiceEnabled": false
+    },
+    {
+      "appId": "com.bskyb.epgui",
+      "blocked": false,
+      "extended": {},
+      "icons": [
+        {
+          "APPTRAY": "http://127.0.0.1:8008/pm/icons/com.bskyb.epgui/APPTRAY"
+        }
+      ],
+      "imgIcon": "http://127.0.0.1:8008/pm/icons/com.bskyb.epgui",
+      "pinManagement": "EXCLUDED",
+      "title": "EPG_UI",
+      "validCert": false,
+      "version": "37.962.370.03",
+      "visibleOnTray": false
+    },
+    {
+      "appId": "com.sky.services",
+      "blocked": false,
+      "extended": {},
+      "icons": [
+        {
+          "APPTRAY": "http://127.0.0.1:8008/pm/icons/com.sky.services/APPTRAY"
+        }
+      ],
+      "imgIcon": "http://127.0.0.1:8008/pm/icons/com.sky.services",
+      "pinManagement": "EXCLUDED",
+      "title": "Services",
+      "validCert": false,
+      "version": "5.3.8",
+      "visibleOnTray": false
+    }
+  ],
+  "version": 2
+}

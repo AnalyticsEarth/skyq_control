@@ -1,0 +1,39 @@
+{
+  "documentId": "152",
+  "pvrItems": [
+    {
+      "ad": true,
+      "ast": 1792929607,
+      "at": "DD",
+      "carating": "15",
+      "cn": "Sky Atlantic",
+      "downloadlink": "oig://00000000",
+      "eg": 3,
+      "episodenumber": 3,
+      "esg": 4,
+      "et": "UHD-HDR",
+      "finald": 2831,
+      "finalsz": 6921472,
+      "lp": 2809,
+      "lpt": 1792938741,
+      "lto": 0,
+      "predictedsz": 6921472,
+      "programmeuuid": "a4bb996a-869c-577f-8329-38308c96c7ad",
+      "pvrid": "P2904f6c8",
+      "r": "15",
+      "s": true,
+      "schd": 2831,
+      "seasonnumber": 1,
+      "seasonuuid": "5f8c0534-ee29-57df-90fe-1123949f41b1",
+      "seriesuuid": "9bda854b-b068-5fbc-94c2-86d099baf725",
+      "src": "VOD",
+      "status": "RECORDED",
+      "sy": "Synopsis for P2904f6c8.",
+      "t": "Recording P2904f6c8",
+      "type": "update",
+      "vodprogrammeid": 8191176,
+      "w": true
+    }
+  ],
+  "version": 19
+}

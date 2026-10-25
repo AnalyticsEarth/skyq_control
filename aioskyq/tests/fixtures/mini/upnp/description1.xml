@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<root xmlns="urn:schemas-upnp-org:device-1-0">
+<specVersion>
+<major>1</major>
+<minor>0</minor>
+</specVersion>
+<device>
+<deviceType>urn:schemas-nds-com:device:MRSkyRemote:2</deviceType>
+<modelDescription>32D001</modelDescription>
+<modelName>Sky+HD</modelName>
+<modelNumber>Q370.000.09.00L (6akmkck)</modelNumber>
+<friendlyName>000000000</friendlyName>
+<manufacturer>Sky</manufacturer>
+<nds:X_NDS_ChipID xmlns:nds="urn:schemas-nds-com:device-1-0">0000000000</nds:X_NDS_ChipID><nds:X_NDS_PortNumber xmlns:nds="urn:schemas-nds-com:device-1-0">0</nds:X_NDS_PortNumber>
+<nds:X_NDS_LowPowerCapability xmlns:nds="urn:schemas-nds-com:device-1-0">false</nds:X_NDS_LowPowerCapability>
+<nds:X_NDS_StreamingCapable xmlns:nds="urn:schemas-nds-com:device-1-0">false</nds:X_NDS_StreamingCapable>
+<UDN>uuid:00000000-0000-4000-8000-000000000004</UDN>
+<serviceList>
+<service>
+<serviceType>urn:schemas-nds-com:service:SkyRemote:1</serviceType>
+<serviceId>urn:nds-com:serviceId:SkyRemote</serviceId>
+<SCPDURL>/player_rui_cds.xml</SCPDURL>
+<controlURL>/00000000-0000-4000-8000-000000000004SkyRemote</controlURL>
+<eventSubURL>/00000000-0000-4000-8000-000000000004SkyRemote</eventSubURL>
+</service>
+</serviceList>
+</device>
+<URLBase>http://192.0.2.11:49153/</URLBase>
+</root>
